@@ -1,0 +1,30 @@
+.sticky_header {
+  width: 100%;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000; // 다른 요소 위에 오도록
+  background-color: var(--color-background);
+  padding: 10px 20px;
+  box-sizing: border-box;
+  box-shadow: 0 2px 4px var(--color-border);
+  display: flex;
+  align-items: center;
+  h1 {
+    font-size: 4.25rem;
+    font-weight: 700;
+    color: var(--primary-3);
+  }
+  ul {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-left: 40px;
+    li {
+      font-size: 1.25rem;
+      &:hover {
+        color: var(--secondary-2);
+      }
+    }
+  }
+}

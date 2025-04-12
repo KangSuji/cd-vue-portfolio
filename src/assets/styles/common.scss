@@ -1,0 +1,13 @@
+@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css');
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  font-family: 'Pretendard Variable', sans-serif;
+  font-size: 16px;
+}
+.page_container {
+  width: 100%;
+  background-color: var(--color-background-soft);
+}
