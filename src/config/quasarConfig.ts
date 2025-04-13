@@ -104,5 +104,6 @@ export default {
   plugins: {
     Quasar,
   },
+  extras: ['material-icons'],
   iconSet,
 };

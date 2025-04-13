@@ -16,6 +16,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "@quasar/extras": "^1.16.17",
     "echarts": "^5.6.0",
     "pinia": "^3.0.1",
     "quasar": "^2.18.1",
