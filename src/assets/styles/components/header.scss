@@ -1,10 +1,4 @@
-.sticky_header {
-  width: 100%;
-  position: sticky;
-  top: 0;
-  left: 0;
-  z-index: 1000; // 다른 요소 위에 오도록
-  background-color: var(--color-background);
+.header {
   padding: 10px 20px;
   box-sizing: border-box;
   box-shadow: 0 2px 4px var(--color-border);
