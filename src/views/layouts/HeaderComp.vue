@@ -7,18 +7,16 @@
   </q-header>
 
   <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="400" elevated>
-    <q-scroll-area>
-      <q-list padding>
-        <template v-for="menu in menus" :key="menu.code">
-          <q-item clickable @click="router.push({ name: menu.name })">
-            <q-item-section avatar>
-              <q-icon :name="menu.icon" />
-            </q-item-section>
-            <q-item-section> {{ menu.label }} </q-item-section>
-          </q-item>
-        </template>
-      </q-list>
-    </q-scroll-area>
+    <q-list padding>
+      <template v-for="menu in menus" :key="menu.code">
+        <q-item clickable @click="router.push({ name: menu.name })">
+          <q-item-section avatar>
+            <q-icon :name="menu.icon" />
+          </q-item-section>
+          <q-item-section> {{ menu.label }} </q-item-section>
+        </q-item>
+      </template>
+    </q-list>
   </q-drawer>
 </template>
 <script lang="ts" setup>
