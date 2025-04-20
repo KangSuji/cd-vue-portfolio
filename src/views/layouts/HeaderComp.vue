@@ -9,20 +9,45 @@
   <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="400" elevated>
     <q-scroll-area>
       <q-list padding>
-        <q-item clickable v-ripple>
-          <q-item-section avatar>
-            <q-icon name="inbox" />
-          </q-item-section>
-
-          <q-item-section> Inbox </q-item-section>
-        </q-item>
+        <template v-for="menu in menus" :key="menu.code">
+          <q-item clickable @click="router.push({ name: menu.name })">
+            <q-item-section avatar>
+              <q-icon :name="menu.icon" />
+            </q-item-section>
+            <q-item-section> {{ menu.label }} </q-item-section>
+          </q-item>
+        </template>
       </q-list>
     </q-scroll-area>
   </q-drawer>
 </template>
 <script lang="ts" setup>
-import router from '@/router';
 import { ref } from 'vue';
+import router from '@/router';
 
+interface MeunList {
+  label: string;
+  code: string;
+  name?: string;
+  path: string;
+  icon: string;
+}
 const drawer = ref(false);
+
+const menus = ref<MeunList[]>([
+  {
+    label: 'Main',
+    code: 'main',
+    name: 'main',
+    path: '/main',
+    icon: 'inbox',
+  },
+  {
+    label: 'About',
+    code: 'about',
+    name: 'about',
+    path: '/about',
+    icon: 'person',
+  },
+]);
 </script>

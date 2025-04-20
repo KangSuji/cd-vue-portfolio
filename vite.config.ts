@@ -12,11 +12,11 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  // css: {
-  //   preprocessorOptions: {
-  //     sass: {
-  //       additionalData: `@import "quasar/src/css/index.sass";\n`, // 여기에 필요한 스타일시트 경로 추가
-  //     },
-  //   },
-  // },
+  css: {
+    preprocessorOptions: {
+      sass: {
+        additionalData: `@import "quasar/src/css/index.sass";`,
+      },
+    },
+  },
 });

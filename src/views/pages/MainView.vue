@@ -1,19 +1,19 @@
 <template>
   <q-page>
-    <main class="main_container">
+    <main class="page_container">
       <div class="title_area">
         <h1>Main Dashboard</h1>
       </div>
       <div class="contents_wrapper">
         <div class="chart_area">
-          <div ref="lineChart" :style="chartSize" />
+          <div ref="barChart" :style="chartSize" />
         </div>
       </div>
     </main>
   </q-page>
 </template>
 <script lang="ts" setup>
-import { nextTick, onMounted, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 import * as echarts from 'echarts/core';
 import {
   TitleComponent,
@@ -22,7 +22,12 @@ import {
   LegendComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
-import { LineChart } from 'echarts/charts';
+import { BarChart } from 'echarts/charts';
+import { useUserStore } from '@/stores/useMainStore';
+// import { storeToRefs } from 'pinia';
+
+const userStore = useUserStore();
+// const {  } = storeToRefs(userStore);
 
 // Echart 등록
 echarts.use([
@@ -30,44 +35,57 @@ echarts.use([
   TooltipComponent,
   GridComponent,
   LegendComponent,
-  LineChart,
+  BarChart,
   CanvasRenderer,
 ]);
 
-const lineChart = ref();
+const barChart = ref();
+
 const chartSize = {
   widht: '100%',
   height: '500px',
-};
-const chartDatas = {
-  xAxis: {
-    type: 'category',
-    data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-  },
-  yAxis: {
-    type: 'value',
-  },
-  series: [
-    {
-      data: [150, 230, 224, 218, 135, 147, 260],
-      type: 'line',
-    },
-  ],
 };
 
 let chart: echarts.ECharts;
 
 const drawChart = () => {
-  if (chart) {
-    chart.dispose();
-  }
-  chart = echarts.init(lineChart.value);
-  chart.setOption({ ...chartDatas }, true);
+  if (!barChart.value) return;
+  chart = echarts.init(barChart.value);
+
+  const years = Object.keys(userStore.movieCountsByYear);
+  const values = Object.values(userStore.movieCountsByYear);
+
+  chart.setOption({
+    title: { text: '연도별 영화 개봉 수' },
+    xAxis: { type: 'category', data: years },
+    yAxis: { type: 'value' },
+    series: [
+      {
+        data: values,
+        type: 'bar',
+        itemStyle: { color: '#42A5F5' },
+      },
+    ],
+  });
 };
 
-onMounted(() => {
-  nextTick(() => {
+const resizeChart = () => {
+  chart.resize();
+};
+
+const getMovieList = async () => {
+  try {
+    await useUserStore().fetchMoviesCount(2025);
+  } catch (error) {
+    console.error(error);
+  } finally {
     drawChart();
-  });
+  }
+};
+onMounted(() => {
+  getMovieList();
+  window.addEventListener('resize', resizeChart);
 });
+
+onBeforeMount(() => window.removeEventListener('resize', resizeChart));
 </script>
