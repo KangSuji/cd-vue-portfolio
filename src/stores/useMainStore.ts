@@ -11,7 +11,7 @@ export const useUserStore = defineStore('user', {
   actions: {
     async fetchMoviesCount(year?: number) {
       if (year) console.log(year);
-      const years = [2020, 2021, 2022, 2023, 2024];
+      const years = [2020, 2021, 2022, 2023, 2024, 2025];
       const apiKey = import.meta.env.VITE_TMDB_API_KEY;
       const counts: Record<string, number> = {};
 
