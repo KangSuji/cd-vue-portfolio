@@ -10,7 +10,6 @@ import {
   QDrawer,
   QPageContainer,
   QPage,
-  QPagination,
   QToolbar,
   QSplitter,
   QBtn,
@@ -45,18 +44,23 @@ import {
   QSeparator,
   QPageSticky,
   Loading,
+  QDate,
+  ClosePopup,
+  QPopupProxy,
 } from 'quasar';
 
 export function setupQuasar(app: App) {
   app.use(Quasar, {
     config: {},
     components: {
+      Quasar,
+      Dialog,
+      Notify,
       QLayout,
       QHeader,
       QDrawer,
       QPageContainer,
       QPage,
-      QPagination,
       QToolbar,
       QSplitter,
       QBtn,
@@ -77,6 +81,7 @@ export function setupQuasar(app: App) {
       QTabPanel,
       QToggle,
       QInput,
+      QDate,
       QDialog,
       QFooter,
       QMenu,
@@ -90,8 +95,9 @@ export function setupQuasar(app: App) {
       QAvatar,
       QSeparator,
       QPageSticky,
+      QPopupProxy,
     },
-    directives: {},
+    directives: { ClosePopup },
     plugins: {
       Dialog,
       Notify,

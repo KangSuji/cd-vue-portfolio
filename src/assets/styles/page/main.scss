@@ -5,6 +5,11 @@
       font-size: 20px;
       font-weight: 500;
     }
+    .search_area {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
     .chart_area {
       .tooltip_style {
         border-radius: 8px;

@@ -17,6 +17,10 @@
       <q-tab-panels v-model="tabs" keep-alive>
         <q-tab-panel name="movie">
           <div class="contents_wrapper">
+            <div class="search_area">
+              <DateComp :start-date="startYear" />
+              <DateComp :is-start-date="false" :start-date="endYear" />
+            </div>
             <p>Movie count(2020 - 2025)</p>
             <div class="chart_area">
               <div ref="barChart" :style="chartSize" />
@@ -28,7 +32,8 @@
   </q-page>
 </template>
 <script lang="ts" setup>
-import { onBeforeMount, onMounted, ref } from 'vue';
+//TODO: 검색 할 년도 선택 받기, 영화와 티비 시리즈 토탈 개수만 얻을수 있는 API 찾아보기
+import { nextTick, onBeforeMount, onMounted, ref } from 'vue';
 import * as echarts from 'echarts/core';
 import {
   TitleComponent,
@@ -38,14 +43,19 @@ import {
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
 import { BarChart } from 'echarts/charts';
-import { useUserStore } from '@/stores/useMainStore';
+import { useMovieStore } from '@/stores/useMainStore';
 import { theme } from '@/config/chartOptions';
 import { storeToRefs } from 'pinia';
+import progressConfig from '@/config/progressConfig';
+import DateComp from '@/components/DateComp.vue';
 
-const userStore = useUserStore();
-const { movieCountsByYear } = storeToRefs(userStore);
+const moiveStore = useMovieStore();
+const { movieCountsByYear } = storeToRefs(moiveStore);
 
 const tabs = ref('movie');
+
+const startYear = ref('');
+const endYear = ref('');
 
 // Echart 등록
 echarts.use([
@@ -66,14 +76,14 @@ const chartSize = {
 
 let chart: echarts.ECharts;
 
-const drawChart = () => {
+const drawChart = async () => {
   if (!barChart.value) return;
   echarts.registerTheme('theme', theme.theme);
   chart = echarts.init(barChart.value, 'theme');
 
   const years = Object.keys(movieCountsByYear.value);
   const values = Object.values(movieCountsByYear.value);
-  // console.log('values', values);
+  console.log('values', values);
 
   const chartOptions = {
     xAxis: { type: 'category', data: years },
@@ -120,14 +130,18 @@ const resizeChart = () => {
 };
 
 const getMovieList = async () => {
+  progressConfig.show();
   try {
-    await useUserStore().fetchMoviesCount(2025);
+    await moiveStore.fetchMoviesCount();
+    await nextTick();
+    await drawChart();
   } catch (error) {
     console.error(error);
   } finally {
-    drawChart();
+    progressConfig.hide();
   }
 };
+
 onMounted(() => {
   getMovieList();
   window.addEventListener('resize', resizeChart);
