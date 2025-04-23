@@ -8,10 +8,12 @@
           <span>Main Dashboard</span>
         </p>
       </div>
-      <q-tabs v-model="tabs">
-        <q-tab name="movie">Movies</q-tab>
-        <q-tab name="series">series</q-tab>
-      </q-tabs>
+      <div class="main_tabs">
+        <q-tabs v-model="tabs" dense class="main_tabs_wrapper">
+          <q-tab name="movie">Movies</q-tab>
+          <q-tab name="series">series</q-tab>
+        </q-tabs>
+      </div>
       <q-tab-panels v-model="tabs" keep-alive>
         <q-tab-panel name="movie">
           <div class="contents_wrapper">

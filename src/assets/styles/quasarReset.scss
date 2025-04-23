@@ -1,0 +1,58 @@
+/* card */
+.card-empty {
+  padding: 0;
+  margin: 0;
+}
+/* q-scroll */
+.q-scrollarea {
+  .q-scrollarea__bar--v,
+  .q-scrollarea__thumb--v {
+    // 세로 스크롤 너비
+    width: 6px;
+  }
+  .q-scrollarea__bar--h,
+  .q-scrollarea__thumb--h {
+    // 가로 스크롤 높이
+    height: 6px;
+  }
+  .q-scrollarea__thumb {
+    // color
+    background-color: #999;
+    opacity: 1;
+  }
+}
+
+.q-page-container {
+  padding-top: 0 !important;
+}
+.q-page {
+  min-height: 0px !important;
+}
+.q-focus-helper {
+  display: none;
+}
+.q-field--with-bottom {
+  padding-bottom: 0;
+}
+/** q-btn */
+.q-btn {
+  min-height: auto;
+  text-transform: inherit;
+
+  .q-icon {
+    margin-right: 0 !important;
+  }
+}
+.q-btn--actionable.q-btn--standard:before {
+  transition: none;
+}
+.q-btn:before {
+  box-shadow: none;
+}
+.q-btn--actionable.q-btn--standard.q-btn--active:before,
+.q-btn--actionable.q-btn--standard:active:before {
+  box-shadow: none;
+}
+.q-btn--actionable.a-btn--standard:before {
+  transition: none;
+}

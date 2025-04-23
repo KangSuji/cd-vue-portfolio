@@ -1,23 +1,17 @@
 <template>
-  <q-header class="header">
-    <span class="material-symbols-outlined logo cursor-pointer" @click="router.push('/')">
-      movie_info
-    </span>
-    <q-btn icon="menu" flat round class="menu_btn" @click="drawer = !drawer" />
+  <q-header class="header" elevated>
+    <div class="flex items-center">
+      <q-icon name="movie" rounded class="header_logo cursor-pointer" @click="router.push('/')" />
+      <ul class="header_list">
+        <template v-for="menu in menus" :key="menu.code">
+          <li clickable @click="router.push({ name: menu.name })">
+            <span>{{ menu.label }}</span>
+          </li>
+        </template>
+      </ul>
+    </div>
+    <div class="header_user_area">USER</div>
   </q-header>
-
-  <q-drawer v-model="drawer" show-if-above :width="200" :breakpoint="400" elevated>
-    <q-list padding>
-      <template v-for="menu in menus" :key="menu.code">
-        <q-item clickable @click="router.push({ name: menu.name })">
-          <q-item-section avatar>
-            <q-icon :name="menu.icon" />
-          </q-item-section>
-          <q-item-section> {{ menu.label }} </q-item-section>
-        </q-item>
-      </template>
-    </q-list>
-  </q-drawer>
 </template>
 <script lang="ts" setup>
 import { ref } from 'vue';

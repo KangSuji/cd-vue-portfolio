@@ -1,22 +1,50 @@
 .header {
-  padding: 10px 20px;
-  box-sizing: border-box;
-  box-shadow: 0 2px 4px var(--color-border);
+  width: 100%;
   display: flex;
   align-items: center;
-  background-color: var(--primary-1);
-  .logo {
+  justify-content: space-between;
+  padding: 20px 20px;
+  box-sizing: border-box;
+  background-color: var(--black-mute);
+  box-shadow: 0 2px 4px var(--color-border);
+  position: sticky;
+  &_list {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    gap: 40px;
+    padding: 0 12px;
+    margin-left: 36px;
+    font-size: 1.125rem;
+    color: var(--color-text);
+    li {
+      cursor: pointer;
+      :hover {
+        color: var(--secondary);
+      }
+    }
+  }
+  &_logo {
     font-size: 2.25rem;
     font-weight: 700;
-    color: var(--primary-3);
+    color: var(--primary);
   }
-  .menu_btn {
-    font-size: 18px;
+  &_user_area {
+    width: 200px;
+    padding: 12px 8px;
+    box-sizing: border-box;
+    text-align: center;
+    border-radius: 20px;
+    background-color: var(--gray);
+    color: var(--black-soft);
     font-weight: 700;
-    color: var(--primary-3);
-    margin-left: 12px;
+    cursor: pointer;
+    transition: box-shadow 0.1s ease-in;
+    &:hover {
+      box-shadow: 0px 0px 5px var(--white-mute);
+    }
   }
-}
-.q-drawer {
-  background-color: var(--primary-1);
 }

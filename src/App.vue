@@ -1,5 +1,5 @@
 <template>
-  <q-layout :view="'hhh lpr fff'">
+  <q-layout :view="'Hhh lpr fff'">
     <HeaderComp />
     <q-page-container>
       <RouterView />
