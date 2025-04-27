@@ -17,11 +17,24 @@
       <q-tab-panels v-model="tabs" keep-alive>
         <q-tab-panel name="movie">
           <div class="contents_wrapper">
-            <div class="search_area">
-              <DateComp :start-date="startYear" />
-              <DateComp :is-start-date="false" :start-date="endYear" />
+            <div>
+              <p class="area_title">{{ `Movie count(${startYear} - ${endYear})` }}</p>
+              <div class="search_area">
+                <DateComp
+                  :is-start-year="true"
+                  :start-year="startYear"
+                  :end-year="endYear"
+                  @update-date="(val) => (startYear = val)"
+                />
+                <DateComp
+                  :is-start-year="false"
+                  :start-year="startYear"
+                  :end-year="endYear"
+                  @update-date="(val) => (endYear = val)"
+                />
+                <q-btn icon="search" label="Search" @click="onClickSearch" />
+              </div>
             </div>
-            <p>Movie count(2020 - 2025)</p>
             <div class="chart_area">
               <div ref="barChart" :style="chartSize" />
             </div>
@@ -54,8 +67,10 @@ const { movieCountsByYear } = storeToRefs(moiveStore);
 
 const tabs = ref('movie');
 
-const startYear = ref('');
-const endYear = ref('');
+const now = new Date();
+const currentYear = now.getFullYear();
+const startYear = ref(String(currentYear - 5));
+const endYear = ref(String(currentYear));
 
 // Echart 등록
 echarts.use([
@@ -129,10 +144,18 @@ const resizeChart = () => {
   chart.resize();
 };
 
+const onClickSearch = () => {
+  getMovieList();
+};
+
 const getMovieList = async () => {
   progressConfig.show();
   try {
-    await moiveStore.fetchMoviesCount();
+    const params = {
+      startYear: startYear.value,
+      endYear: endYear.value,
+    };
+    await moiveStore.fetchMoviesCount(params);
     await nextTick();
     await drawChart();
   } catch (error) {

@@ -17,8 +17,10 @@ const store = {
 };
 export const useMovieStore = defineStore('useMovieStore', store);
 
-export async function fetchMoviesCount() {
-  const years = [2020, 2021, 2022, 2023, 2024, 2025];
+export async function fetchMoviesCount(params: { startYear: string; endYear: string }) {
+  const start = Number(params.startYear);
+  const end = Number(params.endYear);
+
   const apiKey = import.meta.env.VITE_TMDB_API_KEY;
   const counts: Record<string, number> = {};
 
@@ -30,12 +32,13 @@ export async function fetchMoviesCount() {
     },
   };
 
-  for (const year of years) {
+  for (let year = start; year <= end; year++) {
     const res = await fetch(
       `${APIUrl.api}?include_adult=false&include_video=false&language=ko&page=1&region=korea&sort_by=popularity.desc&year=${year}`,
       options,
     ).then((res) => res.json());
-    counts[year] = res?.total_results;
+
+    counts[year] = res?.total_results || 0;
   }
 
   useMovieStore().movieCountsByYear = counts;

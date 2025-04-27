@@ -1,1 +1,26 @@
-
+.q-input {
+  width: fit-content;
+  border: 1px solid #eee;
+  outline: none;
+  border-radius: 8px;
+}
+.q-field__label,
+.q-field__input,
+.q-field__native,
+.q-field__prefix,
+.q-field__suffix {
+  color: var(--color-text);
+}
+.q-item {
+  color: #000;
+  &--active {
+    color: var(--secondary);
+  }
+}
+.q-field__control {
+  color: transparent;
+  height: fit-content;
+}
+.q-field--outlined .q-field__control:before {
+  border: none;
+}
