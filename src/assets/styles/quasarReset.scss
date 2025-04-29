@@ -17,7 +17,7 @@
   }
   .q-scrollarea__thumb {
     // color
-    background-color: #999;
+    background-color: var(--gray);
     opacity: 1;
   }
 }
@@ -38,7 +38,7 @@
 .q-btn {
   min-height: auto;
   text-transform: inherit;
-
+  padding: 0;
   .q-icon {
     margin-right: 0 !important;
   }

@@ -8,36 +8,39 @@
           <span>Main Dashboard</span>
         </p>
       </div>
-      <div class="main_tabs">
-        <q-tabs v-model="tabs" dense class="main_tabs_wrapper">
-          <q-tab name="movie">Movies</q-tab>
-          <q-tab name="series">series</q-tab>
-        </q-tabs>
+      <div class="main_top">
+        <div class="search_container">
+          <p class="area_title">{{ `Movie count(${startYear} - ${endYear})` }}</p>
+          <div class="search_area">
+            <DateComp
+              :is-start-year="true"
+              :start-year="startYear"
+              :end-year="endYear"
+              @update-date="(val) => (startYear = val)"
+            />
+            <DateComp
+              :is-start-year="false"
+              :start-year="startYear"
+              :end-year="endYear"
+              @update-date="(val) => (endYear = val)"
+            />
+            <q-btn class="btn_search" label="검색" @click="onClickSearch" />
+          </div>
+        </div>
+        <div class="main_tabs">
+          <q-tabs v-model="tabs" dense class="main_tabs_wrapper">
+            <q-tab name="movie">Movies</q-tab>
+            <q-tab name="series">series</q-tab>
+          </q-tabs>
+        </div>
       </div>
       <q-tab-panels v-model="tabs" keep-alive>
         <q-tab-panel name="movie">
           <div class="contents_wrapper">
-            <div>
-              <p class="area_title">{{ `Movie count(${startYear} - ${endYear})` }}</p>
-              <div class="search_area">
-                <DateComp
-                  :is-start-year="true"
-                  :start-year="startYear"
-                  :end-year="endYear"
-                  @update-date="(val) => (startYear = val)"
-                />
-                <DateComp
-                  :is-start-year="false"
-                  :start-year="startYear"
-                  :end-year="endYear"
-                  @update-date="(val) => (endYear = val)"
-                />
-                <q-btn icon="search" label="Search" @click="onClickSearch" />
-              </div>
-            </div>
-            <div class="chart_area">
+            <BarChartComp :size="chartSize" :x-axis="Xaxis" :series="series" />
+            <!-- <div class="chart_area">
               <div ref="barChart" :style="chartSize" />
-            </div>
+            </div> -->
           </div>
         </q-tab-panel>
       </q-tab-panels>
@@ -46,20 +49,11 @@
 </template>
 <script lang="ts" setup>
 //TODO: 검색 할 년도 선택 받기, 영화와 티비 시리즈 토탈 개수만 얻을수 있는 API 찾아보기
-import { nextTick, onBeforeMount, onMounted, ref } from 'vue';
-import * as echarts from 'echarts/core';
-import {
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
-  LegendComponent,
-} from 'echarts/components';
-import { CanvasRenderer } from 'echarts/renderers';
-import { BarChart } from 'echarts/charts';
-import { useMovieStore } from '@/stores/useMainStore';
-import { theme } from '@/config/chartOptions';
+import { computed, nextTick, onBeforeMount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
+import { useMovieStore } from '@/stores/useMainStore';
 import progressConfig from '@/config/progressConfig';
+import BarChartComp from './components/BarChartComp.vue';
 import DateComp from '@/components/DateComp.vue';
 
 const moiveStore = useMovieStore();
@@ -72,16 +66,6 @@ const currentYear = now.getFullYear();
 const startYear = ref(String(currentYear - 5));
 const endYear = ref(String(currentYear));
 
-// Echart 등록
-echarts.use([
-  TitleComponent,
-  TooltipComponent,
-  GridComponent,
-  LegendComponent,
-  BarChart,
-  CanvasRenderer,
-]);
-
 const barChart = ref();
 
 const chartSize = {
@@ -89,60 +73,24 @@ const chartSize = {
   height: '650px',
 };
 
-let chart: echarts.ECharts;
-
-const drawChart = async () => {
-  if (!barChart.value) return;
-  echarts.registerTheme('theme', theme.theme);
-  chart = echarts.init(barChart.value, 'theme');
-
-  const years = Object.keys(movieCountsByYear.value);
+const series = computed(() => {
   const values = Object.values(movieCountsByYear.value);
-  console.log('values', values);
+  return [
+    {
+      data: values,
+      type: 'bar',
+      barWidth: 120,
+      itemStyle: {
+        borderRadius: [8, 8, 0, 0],
+      },
+    },
+  ];
+});
 
-  const chartOptions = {
-    xAxis: { type: 'category', data: years },
-    yAxis: { type: 'value' },
-    series: [
-      {
-        data: values,
-        type: 'bar',
-        barWidth: 120,
-        itemStyle: {
-          borderRadius: [8, 8, 0, 0],
-        },
-      },
-    ],
-    tooltip: {
-      trigger: 'item',
-      borderWidth: 0,
-      padding: 0,
-      backgroundColor: 'transparent',
-      formatter: (params) => {
-        return `
-        <div class="tooltip_style">
-          <p class="name">${params.name}년</p>
-          <p class="data">${params.data}개</p>
-        </div>
-      `;
-      },
-      position: function (point, params, dom, rect, size) {
-        return [point[0] + 20, point[1] - 30];
-      },
-    },
-    legend: {
-      type: 'scroll',
-    },
-    grid: {
-      containLabel: true,
-    },
-  };
-  chart.setOption({ ...chartOptions }, true);
-};
-
-const resizeChart = () => {
-  chart.resize();
-};
+const Xaxis = computed(() => {
+  const years = Object.keys(movieCountsByYear.value);
+  return [{ type: 'category', data: years }];
+});
 
 const onClickSearch = () => {
   getMovieList();
@@ -156,8 +104,6 @@ const getMovieList = async () => {
       endYear: endYear.value,
     };
     await moiveStore.fetchMoviesCount(params);
-    await nextTick();
-    await drawChart();
   } catch (error) {
     console.error(error);
   } finally {
@@ -167,8 +113,7 @@ const getMovieList = async () => {
 
 onMounted(() => {
   getMovieList();
-  window.addEventListener('resize', resizeChart);
 });
 
-onBeforeMount(() => window.removeEventListener('resize', resizeChart));
+onBeforeMount(() => moiveStore.$reset());
 </script>

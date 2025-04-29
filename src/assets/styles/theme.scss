@@ -1,61 +1,24 @@
-/* color palette from <https://github.com/vuejs/theme> */
 :root {
   --primary: #f5c518;
-  --secondary: #facc15;
-
-  --primary-1: #1e2a38;
-  --secondary-1: #005f73;
-  --thrid: #0a84ff;
+  --primary-1: #facc15;
+  --primary-2: #d4ac18;
 
   --white: #ffffff;
-  --white-soft: #f8f8f8;
-  --white-mute: #f2f2f2;
+  --white-1: #f8f8f8;
+  --white-2: #f2f2f2;
 
   --gray: #efefef;
+  --gray-1: rgba(235, 235, 235, 0.64);
 
   --black: #000000;
   --black-1: #27292b;
-  --black-soft: #222222;
-  --black-mute: #282828;
+  --black-2: #222222;
+  --black-3: #282828;
 
-  --indigo: #2c3e50;
+  --dark: rgba(84, 84, 84, 0.65);
+  --dark-1: rgba(60, 60, 60, 0.29);
+  --dark-2: rgba(60, 60, 60, 0.12);
+  --dark-3: rgba(84, 84, 84, 0.48);
 
-  --divider-light-1: rgba(60, 60, 60, 0.29);
-  --divider-light-2: rgba(60, 60, 60, 0.12);
-  --divider-dark-1: rgba(84, 84, 84, 0.65);
-  --divider-dark-2: rgba(84, 84, 84, 0.48);
-
-  --text-light-1: var(--indigo);
-  --text-light-2: rgba(60, 60, 60, 0.66);
-  --text-dark-1: var(--white);
-  --text-dark-2: rgba(235, 235, 235, 0.64);
-}
-
-/* semantic color variables for this project */
-:root {
-  --color-background: var(--white);
-  --color-background-soft: var(--white-soft);
-  --color-background-mute: var(--white-mute);
-
-  --color-border: var(--divider-light-2);
-  --color-border-hover: var(--divider-light-1);
-
-  --color-heading: var(--text-light-1);
-  --color-text: var(--text-light-1);
-
-  --section-gap: 160px;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: var(--black-1);
-    --color-background-soft: var(--black-soft);
-    --color-background-mute: var(--black-mute);
-
-    --color-border: var(--divider-dark-2);
-    --color-border-hover: var(--divider-dark-1);
-
-    --color-heading: var(--text-dark-1);
-    --color-text: var(--text-dark-2);
-  }
+  --light-1: rgba(60, 60, 60, 0.66);
 }

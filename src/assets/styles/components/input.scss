@@ -1,6 +1,6 @@
 .q-input {
   width: fit-content;
-  border: 1px solid #eee;
+  border: 1px solid var(--gray);
   outline: none;
   border-radius: 8px;
 }
@@ -9,12 +9,12 @@
 .q-field__native,
 .q-field__prefix,
 .q-field__suffix {
-  color: var(--color-text);
+  color: var(--white-1);
 }
 .q-item {
   color: #000;
   &--active {
-    color: var(--secondary);
+    color: var(--primary-1);
   }
 }
 .q-field__control {
