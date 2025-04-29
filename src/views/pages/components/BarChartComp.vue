@@ -134,10 +134,6 @@ echarts.use([
 const barChart = ref();
 let chart: echarts.ECharts;
 
-const resizeChart = () => {
-  chart.resize();
-};
-
 const drawChart = () => {
   if (chart) {
     chart.dispose();
@@ -147,14 +143,21 @@ const drawChart = () => {
   chart = echarts.init(barChart.value, 'theme');
   chart.setOption({ ...props }, true);
 };
+
 onUpdated(() => {
   drawChart();
 });
+
+const resizeChart = () => {
+  chart.resize();
+};
 
 onMounted(() => {
   drawChart();
   window.addEventListener('resize', resizeChart);
 });
 
-onBeforeMount(() => window.removeEventListener('resize', resizeChart));
+onBeforeMount(() => {
+  window.removeEventListener('resize', resizeChart);
+});
 </script>

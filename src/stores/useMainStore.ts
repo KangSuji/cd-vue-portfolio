@@ -1,23 +1,24 @@
-import { ref, computed } from 'vue';
 import { defineStore } from 'pinia';
 
 enum APIUrl {
-  api = 'https://api.themoviedb.org/3/discover/movie',
+  base = 'https://api.themoviedb.org/3/discover',
+  movie = base + '/movie',
+  tv = base + '/tv',
 }
 const state = () => ({
-  movieCountsByYear: {} as Record<string, number>,
+  countsByYear: {} as Record<string, number>,
 });
 
 const store = {
   id: 'useMovieStore',
   state,
   actions: {
-    fetchMoviesCount,
+    fetchCount,
   },
 };
 export const useMovieStore = defineStore('useMovieStore', store);
 
-export async function fetchMoviesCount(params: { startYear: string; endYear: string }) {
+export async function fetchCount(params: { type: string; startYear: string; endYear: string }) {
   const start = Number(params.startYear);
   const end = Number(params.endYear);
 
@@ -33,13 +34,14 @@ export async function fetchMoviesCount(params: { startYear: string; endYear: str
   };
 
   for (let year = start; year <= end; year++) {
-    const res = await fetch(
-      `${APIUrl.api}?include_adult=false&include_video=false&language=ko&page=1&region=korea&sort_by=popularity.desc&year=${year}`,
-      options,
-    ).then((res) => res.json());
-
+    let url = '';
+    if (params.type === 'movie')
+      url = `${APIUrl.movie}?include_adult=false&include_video=false&language=ko&page=1&region=korea&sort_by=popularity.desc&year=${year}`;
+    if (params.type === 'tv')
+      url = `${APIUrl.tv}?first_air_date_year=${year}&include_adult=false&include_null_first_air_dates=false&language=ko-KR&page=1&sort_by=popularity.desc`;
+    const res = await fetch(url, options).then((res) => res.json());
     counts[year] = res?.total_results || 0;
   }
 
-  useMovieStore().movieCountsByYear = counts;
+  useMovieStore().countsByYear = counts;
 }
