@@ -1,46 +1,22 @@
 <!-- eslint-disable @typescript-eslint/no-explicit-any -->
 <template>
   <q-page>
-    <main class="page_container main_container">
-      <div class="title_area">
-        <p class="title">
-          <span class="material-symbols-rounded icon"> insert_chart </span>
-          <span>Main Dashboard</span>
-        </p>
+    <main class="page_container main-container">
+      <div class="main-card-wrapper">
+        <mainCardComp icon="movie" :content="contents" />
+        <mainCardComp icon="movie" :content="contents" />
+        <mainCardComp icon="movie" :content="contents" />
+        <mainCardComp icon="movie" :content="contents" />
       </div>
-      <div class="main_top">
-        <div class="search_container">
-          <p class="area_title">{{ `Movie count(${startYear} - ${endYear})` }}</p>
-          <div class="search_area">
-            <DateComp
-              :is-start-year="true"
-              :start-year="startYear"
-              :end-year="endYear"
-              @update-date="(val) => (startYear = val)"
-            />
-            <DateComp
-              :is-start-year="false"
-              :start-year="startYear"
-              :end-year="endYear"
-              @update-date="(val) => (endYear = val)"
-            />
-            <q-btn class="btn_search" label="검색" @click="onClickSearch" />
-          </div>
+
+      <div class="main-chart-wrapper">
+        <div class="main__chart">
+          <PieChartComp :size="chartSize" :series="pieChartSeries" />
         </div>
-        <div class="main_tabs">
-          <q-tabs v-model="tabs" dense class="main_tabs_wrapper" @update:model-value="updateTab">
-            <q-tab name="movie">Movies</q-tab>
-            <q-tab name="tv">TV series</q-tab>
-          </q-tabs>
+        <div class="main__chart">
+          <BarChartComp :size="chartSize" :x-axis="Xaxis" :y-axis="yAxis" :series="series" />
         </div>
       </div>
-      <q-tab-panels v-model="tabs" keep-alive>
-        <q-tab-panel :name="tabs">
-          <div class="contents_wrapper">
-            <BarChartComp :size="chartSize" :x-axis="Xaxis" :y-axis="yAxis" :series="series" />
-          </div>
-        </q-tab-panel>
-      </q-tab-panels>
     </main>
   </q-page>
 </template>
@@ -50,8 +26,10 @@ import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/useMainStore';
 import progressConfig from '@/config/progressConfig';
+import mainCardComp, { type Contents } from './components/mainCardComp.vue';
 import BarChartComp from './components/BarChartComp.vue';
 import DateComp from '@/components/DateComp.vue';
+import PieChartComp from './components/PieChartComp.vue';
 
 const moiveStore = useMovieStore();
 const { countsByYear } = storeToRefs(moiveStore);
@@ -74,7 +52,9 @@ const series = computed(() => {
     {
       data: values,
       type: 'bar',
-      barWidth: 120,
+      barStyle: {
+        max: 120,
+      },
       itemStyle: {
         borderRadius: [8, 8, 0, 0],
       },
@@ -89,15 +69,43 @@ const Xaxis = computed(() => {
 
 const yAxis = computed(() => [{ type: 'value' }]);
 
-// 검색
-const onClickSearch = () => {
-  getMovieList(tabs.value);
-};
+// card
+const contents = ref<Contents>({
+  conent: '12345',
+  discription: '영화 정보',
+  icon: 'movie',
+  increase: '+ 1%',
+});
 
-// 탭 전환
-const updateTab = (tabName) => {
-  getMovieList(tabName);
-};
+const pieChartSeries = [
+  {
+    name: 'Access From',
+    type: 'pie',
+    radius: ['55%'],
+    avoidLabelOverlap: false,
+    label: {
+      show: false,
+      position: 'center',
+    },
+    emphasis: {
+      label: {
+        show: true,
+        fontSize: '15',
+        fontWeight: 'bold',
+      },
+    },
+    labelLine: {
+      show: false,
+    },
+    data: [
+      { value: 1048, name: '액션' },
+      { value: 735, name: '드라마' },
+      { value: 580, name: 'SF' },
+      { value: 484, name: '코미디' },
+      { value: 300, name: '스릴러' },
+    ],
+  },
+];
 
 const getMovieList = async (tabName: string) => {
   progressConfig.show();
