@@ -2,8 +2,8 @@
 
 body {
   min-height: 100vh;
-  color: var(--color-text);
-  background: var(--black-2);
+  color: var(--dark-txt);
+  background: var(--dark-bg);
   font-family: 'Pretendard Variable', sans-serif;
   font-size: 16px;
 }
@@ -14,11 +14,11 @@ body {
   min-height: calc(100vh - 88px);
   padding: 80px 40px 40px;
   box-sizing: border-box;
-  background-color: var(--black-2);
+  background-color: var(--dark-bg);
   .title_area {
     padding: 20px 10px 10px;
     box-sizing: border-box;
-    color: var(--white-2);
+    color: var(--dark-txt);
     .title {
       display: inline-flex;
       align-items: center;

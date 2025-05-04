@@ -1,6 +1,6 @@
 .q-input {
   width: fit-content;
-  border: 1px solid var(--gray);
+  border: 1px solid var(--dark-border);
   outline: none;
   border-radius: 8px;
 }
@@ -11,10 +11,15 @@
 .q-field__suffix {
   color: var(--white-1);
 }
-.q-item {
-  color: #000;
-  &--active {
-    color: var(--primary-1);
+// dropdown
+.q-menu {
+  .q-item {
+    color: #000;
+    &--active {
+      border-radius: 8px;
+      background-color: var(--gray-1);
+      font-weight: 500;
+    }
   }
 }
 .q-field__control {

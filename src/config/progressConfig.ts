@@ -1,4 +1,4 @@
-import { Loading, QSpinnerInfinity } from 'quasar';
+import { Loading, QSpinnerIos } from 'quasar';
 
 /*
 모든 api가 완료되고 나서 progress가 안보이게 할 때
@@ -17,7 +17,7 @@ const progressConfig = {
   show(group = 'movie') {
     Loading.show({
       group: group || 'movie',
-      spinner: QSpinnerInfinity,
+      spinner: QSpinnerIos,
       spinnerColor: 'amber',
       spinnerSize: 150,
     });

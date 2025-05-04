@@ -3,9 +3,9 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 20px;
+  padding: 20px 40px;
   box-sizing: border-box;
-  background-color: var(--black-1);
+  background-color: var(--dark-header);
   box-shadow: 0 2px 4px var(0, 0, 0, 0.05);
   position: fixed;
   &_list {
@@ -19,42 +19,33 @@
     padding: 0 12px;
     margin-left: 36px;
     font-size: 1.125rem;
-    color: var(--gray);
+    font-weight: 500;
+    color: var(--gray-1);
     li {
+      width: 50px;
       cursor: pointer;
       > span {
-        display: inline-flex;
-        align-items: center;
-        justify-items: center;
-        padding: 10px 20px;
-        border-radius: 4px;
-        box-sizing: border-box;
-        transition: all 0.2s ease-in-out;
+        transition: color 0.3s ease-out;
       }
+      &.active,
       :hover {
-        color: var(--white-1);
-        background-color: var(--primary-2);
+        color: var(--dark-txt);
       }
     }
   }
   &_logo {
     font-size: 40px;
-    font-weight: 700;
-    color: var(--primary);
+    color: var(--white);
   }
-  &_user_area {
-    width: 200px;
-    padding: 12px 8px;
-    box-sizing: border-box;
-    text-align: center;
-    border-radius: 20px;
-    background-color: var(--gray);
-    color: var(--black-1);
-    font-weight: 700;
-    cursor: pointer;
-    transition: box-shadow 0.1s ease-in;
-    &:hover {
-      box-shadow: 0px 0px 5px var(--white-1);
+  &_right {
+    display: flex;
+    gap: 24px;
+    .material-symbols-rounded {
+      color: var(--dark-white-bg);
+      font-size: 32px;
+      &:hover {
+        color: var(--black-txt);
+      }
     }
   }
 }

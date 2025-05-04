@@ -9,11 +9,12 @@
 
   --gray: #efefef;
   --gray-1: rgba(235, 235, 235, 0.64);
+  --gray-2: #27272a;
 
   --black: #000000;
-  --black-1: #27292b;
-  --black-2: #222222;
-  --black-3: #282828;
+  --black-1: #111827;
+  --black-2: #09090b;
+  --black-3: #1f2937;
 
   --dark: rgba(84, 84, 84, 0.65);
   --dark-1: rgba(60, 60, 60, 0.29);
@@ -21,4 +22,31 @@
   --dark-3: rgba(84, 84, 84, 0.48);
 
   --light-1: rgba(60, 60, 60, 0.66);
+
+  //--------다크모드 색상 적용
+  --dark-header: var(--black-1); //다크모드 헤더
+  --dark-bg: var(--black-2); //다크모드 배경
+  --dark-card: var(--black-3); //다크모드 카드
+  --dark-tab-active: var(--black-2); // 탭 활성
+  --dark-tab-inactive: var(--gray-2); //탭 비활성 배경
+  --dark-txt: var(--white);
+  --dark-white-bg: var(--gray);
+  --dark-shadow: var(--dark-1);
+  --dark-border: var(--dark);
+  //-------라이트 모드
+  // --light-header: var(--black-1); //다크모드 헤더
+  // --light-bg: var(--black-2); //다크모드 배경
+  // --light-card: var(--black-3); //다크모드 카드
+  // --light-tab-inactive: var(--gray-2); //탭 비활성 배경
+  --light-txt: var(--black);
 }
+
+/**
+차트 기본 색상
+차트1 #0088FE
+차트2 #00C49F
+차트3 #FFBB28
+차트4 #FF8042
+차트5 #8884D8
+
+*/

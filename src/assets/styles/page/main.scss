@@ -1,6 +1,6 @@
 .main_container {
   .contents_wrapper {
-    background-color: var(--black-3);
+    background-color: var(--dark-card);
 
     .chart_area {
       .tooltip_style {
@@ -43,18 +43,18 @@
         width: 200px;
         height: 40px;
         color: var(--white-2);
-        border: 1px solid var(--gray-1);
+        border: 1px solid var(--dark-border);
         outline: none;
         border-radius: 8px;
         font-size: 20px;
         .q-icon {
           font-size: 25px;
-          color: var(--primary);
+          color: var(--white);
         }
         &:active,
         &:focus,
         &:hover {
-          border-color: var(--primary);
+          border-color: var(--white);
         }
       }
       .q-field--outlined {
@@ -90,14 +90,19 @@
         border: 1px solid var(--dark);
         border-radius: 12px;
         .q-tab {
+          width: 120px;
           padding: 8px 20px;
           color: var(--gray-1);
         }
         .q-tab--active {
-          background-color: var(--dark);
+          background-color: var(--dark-tab-active);
+          color: var(--dark-txt);
           .q-tab__indicator {
             display: none;
           }
+        }
+        .q-tab--inactive {
+          background-color: var(--dark-tab-inactive);
         }
       }
     }
@@ -106,6 +111,6 @@
 .q-tab-panels {
   border-radius: 12px;
   padding: 24px;
-  background-color: var(--black-3);
-  box-shadow: 0px 6px 6px -6px var(--dark);
+  background-color: var(--dark-card);
+  box-shadow: 0px 6px 6px -6px var(--dark-shadow);
 }
