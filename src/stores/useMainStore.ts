@@ -1,47 +1,62 @@
 import { defineStore } from 'pinia';
 
 enum APIUrl {
-  base = 'https://api.themoviedb.org/3/discover',
-  movie = base + '/movie',
-  tv = base + '/tv',
+  base = 'https://api.themoviedb.org/3/',
+  rateMv = base + 'movie/top_rated?language=ko-KR&page=1',
+  trandMv = base + 'trending/movie/day?language=ko-KR',
+  discoverMv = 'https://api.themoviedb.org/3/discover/movie',
+  discoverTv = base + 'discover/tv',
+  mvGenre = 'https://api.themoviedb.org/3/genre/movie/list',
 }
+
+const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+
+const options = {
+  method: 'GET',
+  headers: {
+    accept: 'application/json',
+    Authorization: `Bearer ${apiKey}`,
+  },
+};
+
 const state = () => ({
-  countsByYear: {} as Record<string, number>,
+  countsByGenre: {} as Record<string, number>,
+  rateMvList: [] as any,
+  trandMvList: [] as any,
+  countGenres: {} as Record<string, any>,
 });
 
 const store = {
   id: 'useMovieStore',
   state,
   actions: {
-    fetchCount,
+    searchTrandDay,
+    getGenreMovieCounts,
   },
 };
 export const useMovieStore = defineStore('useMovieStore', store);
 
-export async function fetchCount(params: { type: string; startYear: string; endYear: string }) {
-  const start = Number(params.startYear);
-  const end = Number(params.endYear);
+export async function searchTrandDay() {
+  const res = await fetch(APIUrl.trandMv, options).then((res) => res.json());
+  useMovieStore().trandMvList = res?.results ?? [];
+}
 
-  const apiKey = import.meta.env.VITE_TMDB_API_KEY;
+async function getGenreMovieCounts() {
+  const genreListRes = await fetch(`${APIUrl.mvGenre}?language=ko`, options).then((res) =>
+    res.json(),
+  );
+
+  const { genres } = await genreListRes;
+
   const counts: Record<string, number> = {};
 
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: `Bearer ${apiKey}`,
-    },
-  };
+  for (const genre of genres) {
+    const res = await fetch(
+      `${APIUrl.discoverMv}?include_adult=false&include_video=false&language=ko-KR&page=1&sort_by=popularity.desc&with_genres=${genre.id}`,
+      options,
+    ).then((res) => res.json());
 
-  for (let year = start; year <= end; year++) {
-    let url = '';
-    if (params.type === 'movie')
-      url = `${APIUrl.movie}?include_adult=false&include_video=false&language=ko&page=1&region=korea&sort_by=popularity.desc&year=${year}`;
-    if (params.type === 'tv')
-      url = `${APIUrl.tv}?first_air_date_year=${year}&include_adult=false&include_null_first_air_dates=false&language=ko-KR&page=1&sort_by=popularity.desc`;
-    const res = await fetch(url, options).then((res) => res.json());
-    counts[year] = res?.total_results || 0;
+    counts[genre.name] = res.total_results;
   }
-
-  useMovieStore().countsByYear = counts;
+  useMovieStore().countGenres = counts;
 }

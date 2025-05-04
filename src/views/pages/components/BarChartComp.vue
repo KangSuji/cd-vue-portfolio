@@ -28,7 +28,6 @@ const props = defineProps({
   // x축
   xAxis: {
     type: Array,
-    required: true,
     default: () => {
       return [{ type: 'category' }];
     },
@@ -36,7 +35,6 @@ const props = defineProps({
   // y축
   yAxis: {
     type: Array,
-    required: true,
     default: () => {
       return [{ type: 'value' }];
     },
@@ -44,7 +42,6 @@ const props = defineProps({
   // 데이터
   series: {
     type: Array,
-    required: true,
     default: () => {
       return [
         {
@@ -70,11 +67,11 @@ const props = defineProps({
           backgroundColor: 'transparent',
           formatter: (params) => {
             return `
-        <div class="tooltip_style">
-          <p class="name">${params.name}년</p>
-          <p class="data">${params.data}개</p>
-        </div>
-      `;
+              <div class="tooltip_style">
+                <p class="name">${params.name}</p>
+                <p class="data">${params.data}</p>
+              </div>
+            `;
           },
           position: function (point, params, dom, rect, size) {
             return [point[0] + 20, point[1] - 30];

@@ -4,7 +4,7 @@
   참고 : https://echarts.apache.org/examples/en/index.html
 -->
 <template>
-  <div ref="pieChart" :style="chartProps.size" @click="onChartClicked" />
+  <div ref="pieChart" :style="chartProps.size" />
 </template>
 
 <script setup lang="ts">
@@ -43,7 +43,7 @@ const chartProps = defineProps({
     type: Object,
     required: false,
     default: () => {
-      return {};
+      return { show: false };
     },
   },
   // 차트 series 데이터
@@ -66,11 +66,11 @@ const chartProps = defineProps({
           backgroundColor: 'transparent',
           formatter: (params) => {
             return `
-        <div class="tooltip_style">
-          <p class="name">${params.name}년</p>
-          <p class="data">${params.data}개</p>
-        </div>
-      `;
+            <div class="tooltip_style">
+              <p class="name">${params.name}</p>
+              <p class="data">${params.data.value}</p>
+            </div>
+          `;
           },
           position: function (point, params, dom, rect, size) {
             return [point[0] + 20, point[1] - 30];
@@ -119,10 +119,6 @@ const chartProps = defineProps({
   },
 });
 
-const onChartClicked = (e) => {
-  // console.log('onChartClicked', e);
-};
-
 let chart;
 const drawChart = () => {
   if (chart) {
@@ -139,57 +135,6 @@ const chartResize = () => {
   chart.resize();
 };
 
-const getColor = () => {
-  return chart.getOption()?.color;
-};
-
-const getDataUrl = () => {
-  // 원래 옵션 저장
-  const originalOption = chart.getOption();
-  // 프린트 / 다운로드 시 옵션 저장
-  const tempOption = JSON.parse(JSON.stringify(originalOption));
-
-  tempOption.series?.forEach((s: any) => {
-    s.animation = false;
-    if (s.label) {
-      s.label.show = true;
-      s.label.color = '#111827';
-    }
-    if (s.labelLine) {
-      s.labelLine.show = true;
-    }
-  });
-
-  if (tempOption.legend) {
-    tempOption.legend[0].right = '20%';
-
-    const richNameIcon = tempOption.legend[0].textStyle?.rich?.nameIcon;
-    const richIcon = tempOption.legend[0].textStyle?.rich?.icon;
-    if (richIcon && richNameIcon) {
-      richNameIcon.color = '#111827';
-      richIcon.color = '#111827';
-    }
-  }
-  if (tempOption.title && tempOption.title[0]) {
-    const richTitle = tempOption.title[0].textStyle?.rich?.title;
-    if (richTitle) {
-      richTitle.color = '#111827';
-    }
-  }
-  // 다시 원래 옵션으로 적용
-  chart.setOption(tempOption, true);
-
-  const dataUrl = chart.getDataURL({
-    type: 'png',
-    pixelRatio: 2,
-    backgroundColor: '#fff',
-  });
-
-  chart.setOption(originalOption, true);
-
-  return dataUrl;
-};
-
 onMounted(() => {
   drawChart();
 
@@ -203,7 +148,5 @@ onUpdated(() => {
 onBeforeUnmount(() => {
   window.removeEventListener('resize', chartResize);
 });
-
-defineExpose({ getColor, getDataUrl });
 </script>
 <style lang="scss" scoped></style>

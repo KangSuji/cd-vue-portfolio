@@ -11,35 +11,33 @@
 
       <div class="main-chart-wrapper">
         <div class="main__chart">
-          <PieChartComp :size="chartSize" :series="pieChartSeries" />
+          <p class="main__chart__title">영화 장르별 개수</p>
+          <PieChartComp
+            :size="chartSize"
+            :series="pieChartSeries"
+            :legend="pieLegend"
+            :tooltip="pieToolTip"
+          />
         </div>
         <div class="main__chart">
-          <BarChartComp :size="chartSize" :x-axis="Xaxis" :y-axis="yAxis" :series="series" />
+          <p class="main__chart__title">Get the trending movies 10(Today)</p>
+          <BarChartComp :size="chartSize" :x-axis="Xaxis" :series="series" :tooltip="barTooltip" />
         </div>
       </div>
     </main>
   </q-page>
 </template>
 <script lang="ts" setup>
-//TODO: 검색 할 년도 선택 받기, 영화와 티비 시리즈 토탈 개수만 얻을수 있는 API 찾아보기
 import { computed, onBeforeMount, onMounted, ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/useMainStore';
 import progressConfig from '@/config/progressConfig';
 import mainCardComp, { type Contents } from './components/mainCardComp.vue';
 import BarChartComp from './components/BarChartComp.vue';
-import DateComp from '@/components/DateComp.vue';
 import PieChartComp from './components/PieChartComp.vue';
 
 const moiveStore = useMovieStore();
-const { countsByYear } = storeToRefs(moiveStore);
-
-const tabs = ref('movie');
-
-const now = new Date();
-const currentYear = now.getFullYear();
-const startYear = ref(String(currentYear - 5));
-const endYear = ref(String(currentYear));
+const { trandMvList, countGenres } = storeToRefs(moiveStore);
 
 const chartSize = {
   widht: '100%',
@@ -47,27 +45,71 @@ const chartSize = {
 };
 
 const series = computed(() => {
-  const values = Object.values(countsByYear.value);
+  const list = trandMvList.value ?? [];
+
+  const top3Indices = list
+    .filter((value, index) => index < 10)
+    .map((value, index) => ({ value, index }))
+    .sort((a, b) => b.value.popularity - a.value.popularity)
+    .slice(0, 3)
+    .map((item) => item.index);
+
   return [
     {
-      data: values,
+      data: list.map((value, index) => {
+        const isTop3 = top3Indices.includes(index);
+        return {
+          value: value.popularity,
+          itemStyle: {
+            color: isTop3 ? '#8884D8' : '#c8c8c8',
+          },
+          emphasis: {
+            itemStyle: {
+              color: '#8884D8',
+            },
+          },
+        };
+      }),
       type: 'bar',
       barStyle: {
         max: 120,
       },
       itemStyle: {
         borderRadius: [8, 8, 0, 0],
+        color: '#8884D8',
       },
     },
   ];
 });
 
 const Xaxis = computed(() => {
-  const years = Object.keys(countsByYear.value);
-  return [{ type: 'category', data: years }];
+  const list = trandMvList.value ?? [];
+  return [
+    { type: 'category', data: list?.filter((item, idx) => idx < 10).map((item) => item.title) },
+  ];
 });
 
-const yAxis = computed(() => [{ type: 'value' }]);
+const barTooltip = computed(() => {
+  {
+    return {
+      trigger: 'item',
+      borderWidth: 0,
+      padding: 0,
+      backgroundColor: 'transparent',
+      formatter: (params) => {
+        return `
+              <div class="tooltip_style">
+                <p class="name">${params.name}</p>
+                <p class="data">${params.value}</p>
+              </div>
+            `;
+      },
+      position: function (point, params, dom, rect, size) {
+        return [point[0] + 20, point[1] - 30];
+      },
+    };
+  }
+});
 
 // card
 const contents = ref<Contents>({
@@ -77,45 +119,84 @@ const contents = ref<Contents>({
   increase: '+ 1%',
 });
 
-const pieChartSeries = [
-  {
-    name: 'Access From',
-    type: 'pie',
-    radius: ['55%'],
-    avoidLabelOverlap: false,
-    label: {
-      show: false,
-      position: 'center',
-    },
-    emphasis: {
+const pieChartSeries = computed(() => {
+  const list = countGenres.value ?? {};
+  const pieData = Object.entries(list).map(([name, value]) => ({
+    name,
+    value,
+  }));
+
+  return [
+    {
+      type: 'pie',
+      radius: '60%',
+
       label: {
         show: true,
-        fontSize: '15',
-        fontWeight: 'bold',
       },
+      emphasis: {
+        label: {
+          show: true,
+        },
+      },
+      labelLine: {
+        show: true,
+      },
+      data: pieData,
     },
-    labelLine: {
-      show: false,
+  ];
+});
+const pieLegend = computed(() => {
+  const list = countGenres.value ?? {};
+  const pieData = Object.entries(list).map(([name, value]) => ({
+    name,
+    value,
+  }));
+  return {
+    orient: 'vertical',
+    left: 'left',
+    top: '10%',
+    bottom: '10%',
+    type: 'scroll',
+    textStyle: {
+      color: 'gray',
     },
-    data: [
-      { value: 1048, name: '액션' },
-      { value: 735, name: '드라마' },
-      { value: 580, name: 'SF' },
-      { value: 484, name: '코미디' },
-      { value: 300, name: '스릴러' },
-    ],
-  },
-];
+    formatter: (name: string) => {
+      const item = pieData.find((i) => i.name === name);
+      return item ? `${item.name}: ${item.value}개` : name;
+    },
+  };
+});
 
-const getMovieList = async (tabName: string) => {
+// 파이(도넛) 툴팁 커스텀
+const pieToolTip = computed(() => {
+  return {
+    trigger: 'item',
+    backgroundColor: 'transparent',
+    borderWidth: 0,
+    extraCssText: 'box-shadow: unset;',
+    formatter: (params) => {
+      return `
+      <div class="pie-tooltip-style">
+        <p class="title">${params.name}</p>
+        <div class="content">
+          <p class="marker">${params.marker}</p>
+          <p class="content">${Number(params.percent).toFixed(1)}%</p>
+        </div>
+      </div>
+      `;
+    },
+    position: function (point, params, dom, rect, size) {
+      return [point[0] - 10, point[1] - 70]; // 툴팁 위치를 마우스 위로 조정
+    },
+  };
+});
+
+const getMovieList = async () => {
   progressConfig.show();
   try {
-    const params = {
-      type: tabName ?? 'movie',
-      startYear: startYear.value,
-      endYear: endYear.value,
-    };
-    await moiveStore.fetchCount(params);
+    await moiveStore.searchTrandDay();
+    await moiveStore.getGenreMovieCounts();
   } catch (error) {
     console.error(error);
   } finally {
@@ -124,7 +205,7 @@ const getMovieList = async (tabName: string) => {
 };
 
 onMounted(() => {
-  getMovieList(tabs.value);
+  getMovieList();
 });
 
 onBeforeMount(() => moiveStore.$reset());
