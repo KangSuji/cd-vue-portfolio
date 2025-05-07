@@ -14,7 +14,7 @@ import {
   ToolboxComponent,
 } from 'echarts/components';
 import { CanvasRenderer } from 'echarts/renderers';
-import { BarChart } from 'echarts/charts';
+import { LineChart } from 'echarts/charts';
 import { theme } from '@/config/chartOptions';
 
 const props = defineProps({
@@ -124,7 +124,7 @@ echarts.use([
   TooltipComponent,
   GridComponent,
   LegendComponent,
-  BarChart,
+  LineChart,
   CanvasRenderer,
   ToolboxComponent,
 ]);

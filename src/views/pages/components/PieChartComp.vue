@@ -1,8 +1,3 @@
-<!--
-  * Pie Chart - radius: '55%' (전체크기)
-  * Doughnut Chart - radius: ['40%', '70%'] ([가운데여백, 전체크기])
-  참고 : https://echarts.apache.org/examples/en/index.html
--->
 <template>
   <div ref="pieChart" :style="chartProps.size" />
 </template>
