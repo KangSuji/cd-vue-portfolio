@@ -39,6 +39,7 @@
             :tooltip="barTooltip"
           />
         </div>
+        <!--
         <div class="main__chart">
           <p class="main__chart__title">월별 평점 분포도(2025)</p>
           <HeatmapChartComp
@@ -49,6 +50,7 @@
             :visual-map="visualMap"
           />
         </div>
+        -->
       </div>
     </main>
   </q-page>
@@ -302,7 +304,7 @@ const getMovieList = async () => {
     await movieStore.getGenreMovieCounts();
     await movieStore.searchTrandMovieByDay();
     await movieStore.fetchMonthlyMovieCounts(2025);
-    await movieStore.fetchHeatmapData();
+    //await movieStore.fetchHeatmapData();
   } catch (error) {
     console.error(error);
   } finally {
