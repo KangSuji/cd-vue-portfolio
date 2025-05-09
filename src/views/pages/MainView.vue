@@ -11,12 +11,13 @@
 
       <div class="main-chart-wrapper">
         <div class="main__chart">
-          <p class="main__chart__title">영화 장르별 개수</p>
-          <PieChartComp
+          <p class="main__chart__title">월별 개봉 영화(2025)</p>
+          <LineChartComp
             :size="chartSize"
-            :series="moviePieChartSeries"
-            :legend="moivePieLegend"
-            :tooltip="pieToolTip"
+            :x-axis="monthlyXaxis"
+            :series="monthlySeries"
+            :legend="monthlyLegend"
+            :tooltip="barTooltip"
           />
         </div>
         <div class="main__chart">
@@ -29,29 +30,6 @@
           />
         </div>
       </div>
-      <div class="main-chart-wrapper">
-        <div class="main__chart">
-          <p class="main__chart__title">월별 개봉 영화(2025)</p>
-          <LineChartComp
-            :size="chartSize"
-            :x-axis="monthlyXaxis"
-            :series="monthlySeries"
-            :tooltip="barTooltip"
-          />
-        </div>
-        <!--
-        <div class="main__chart">
-          <p class="main__chart__title">월별 평점 분포도(2025)</p>
-          <HeatmapChartComp
-            :size="chartSize"
-            :x-axis="ratingXaxis"
-            :y-axis="ratingYaxis"
-            :series="ratingSeries"
-            :visual-map="visualMap"
-          />
-        </div>
-        -->
-      </div>
     </main>
   </q-page>
 </template>
@@ -62,12 +40,10 @@ import { useMovieStore } from '@/stores/useMainStore';
 import progressConfig from '@/config/progressConfig';
 import mainCardComp, { type Contents } from './components/mainCardComp.vue';
 import BarChartComp from './components/BarChartComp.vue';
-import PieChartComp from './components/PieChartComp.vue';
 import LineChartComp from './components/LineChartComp.vue';
-import HeatmapChartComp from './components/HeatmapChartComp.vue';
 
 const movieStore = useMovieStore();
-const { trandMvList, countMoviesGenres, monthlyMovieCount, heatmapData } = storeToRefs(movieStore);
+const { trandMvList, monthlyMovieCount, monthlyTVCount } = storeToRefs(movieStore);
 
 const chartSize = {
   widht: '100%',
@@ -84,75 +60,34 @@ const monthlyXaxis = computed(() => {
 });
 
 const monthlySeries = computed(() => {
-  const list = monthlyMovieCount.value ?? [];
+  const movieList = monthlyMovieCount.value ?? [];
+  const tvList = monthlyTVCount?.value ?? [];
   return [
     {
-      data: list,
+      name: 'Movies',
+      data: movieList,
+      type: 'line',
+    },
+    {
+      name: 'TV Serises',
+      data: tvList,
       type: 'line',
     },
   ];
 });
-
-const ratingXaxis = computed(() => {
-  return [
-    {
-      type: 'category',
-      data: [
-        '0 ~ 1',
-        '1 ~ 2',
-        '2 ~ 3',
-        '3 ~ 4',
-        '4 ~ 5',
-        '5 ~ 6',
-        '6 ~ 7',
-        '7 ~ 8',
-        '8 ~ 9',
-        '9 ~ 10',
-      ],
-      splitArea: { show: true },
-    },
-  ];
-});
-
-const ratingYaxis = computed(() => {
-  return [
-    {
-      type: 'category',
-      data: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-      splitArea: { show: true },
-    },
-  ];
-});
-
-const visualMap = computed(() => {
+const monthlyLegend = computed(() => {
   return {
-    min: 0,
-    max: 20, // 상황에 맞게 조정
-    calculable: true,
-    orient: 'horizontal',
-    left: 'center',
-    bottom: '5%',
+    show: true,
+    data: ['Movies', 'TV Serises'],
+    textStyle: {
+      color: '#fff', // Ensure text is visible
+      fontSize: 12,
+    },
   };
 });
-
-const ratingSeries = computed(() => {
-  return [
-    {
-      name: '평점 분포',
-      type: 'heatmap',
-      data: heatmapData.value,
-      label: { show: true },
-      emphasis: {
-        itemStyle: { shadowBlur: 10, shadowColor: 'rgba(0,0,0,0.5)' },
-      },
-    },
-  ];
-});
-
 const movieSeries = computed(() => {
-  const list = trandMvList.value ?? [];
-
-  const top3Indices = list
+  const movieList = trandMvList.value ?? [];
+  const top3Indices = movieList
     .filter((value, index) => index < 10)
     .map((value, index) => ({ value, index }))
     .sort((a, b) => b.value.popularity - a.value.popularity)
@@ -161,7 +96,7 @@ const movieSeries = computed(() => {
 
   return [
     {
-      data: list.map((value, index) => {
+      data: movieList.map((value, index) => {
         const isTop3 = top3Indices.includes(index);
         return {
           value: value.popularity,
@@ -224,87 +159,12 @@ const contents = ref<Contents>({
   increase: '+ 1%',
 });
 
-const moviePieChartSeries = computed(() => {
-  const list = countMoviesGenres.value ?? {};
-  const pieData = Object.entries(list).map(([name, value]) => ({
-    name,
-    value,
-  }));
-
-  return [
-    {
-      type: 'pie',
-      radius: '60%',
-
-      label: {
-        show: true,
-      },
-      emphasis: {
-        label: {
-          show: true,
-        },
-      },
-      labelLine: {
-        show: true,
-      },
-      data: pieData,
-    },
-  ];
-});
-
-const moivePieLegend = computed(() => {
-  const list = countMoviesGenres.value ?? {};
-  const pieData = Object.entries(list).map(([name, value]) => ({
-    name,
-    value,
-  }));
-  return {
-    orient: 'vertical',
-    left: 'left',
-    top: '10%',
-    bottom: '10%',
-    type: 'scroll',
-    textStyle: {
-      color: 'gray',
-    },
-    formatter: (name: string) => {
-      const item = pieData.find((i) => i.name === name);
-      return item ? `${item.name}: ${item.value}개` : name;
-    },
-  };
-});
-
-// 파이(도넛) 툴팁 커스텀
-const pieToolTip = computed(() => {
-  return {
-    trigger: 'item',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-    extraCssText: 'box-shadow: unset;',
-    formatter: (params) => {
-      return `
-      <div class="pie-tooltip-style">
-        <p class="title">${params.name}</p>
-        <div class="content">
-          <p class="marker">${params.marker}</p>
-          <p class="content">${Number(params.percent).toFixed(1)}%</p>
-        </div>
-      </div>
-      `;
-    },
-    position: function (point, params, dom, rect, size) {
-      return [point[0] - 10, point[1] - 70]; // 툴팁 위치를 마우스 위로 조정
-    },
-  };
-});
-
 const getMovieList = async () => {
   progressConfig.show();
   try {
-    await movieStore.getGenreMovieCounts();
-    await movieStore.searchTrandMovieByDay();
+    await movieStore.fetchMonthlyTvCounts(2025);
     await movieStore.fetchMonthlyMovieCounts(2025);
-    //await movieStore.fetchHeatmapData();
+    await movieStore.searchTrandMovieByDay();
   } catch (error) {
     console.error(error);
   } finally {

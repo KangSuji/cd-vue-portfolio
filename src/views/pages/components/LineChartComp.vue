@@ -22,7 +22,7 @@ const props = defineProps({
   size: {
     type: Object,
     default: () => {
-      return { widht: '100%', height: '650px' };
+      return { widht: '100%', height: '500px' };
     },
   },
   // x축
@@ -99,7 +99,23 @@ const props = defineProps({
   toolbox: {
     type: Object,
     default: () => {
-      return {};
+      return {
+        show: true, // toolbox 표시
+        feature: {
+          saveAsImage: {
+            show: true, // 이미지 저장 버튼
+            title: 'Save as Image',
+          },
+          magicType: {
+            show: true, // 차트 유형 변경 버튼
+            type: ['line', 'bar'], // 지원하는 차트 유형
+            title: {
+              line: 'Switch to Line Chart',
+              bar: 'Switch to Bar Chart',
+            },
+          },
+        },
+      };
     },
   },
   // 그리드(여백)
