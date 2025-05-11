@@ -7,7 +7,7 @@ export enum ThemeType {
 
 // 로컬 스토리지에 테마 값이 없는 경우에만 초기값 설정
 if (!window.localStorage.getItem('theme')) {
-  window.localStorage.setItem('theme', JSON.stringify('light'));
+  window.localStorage.setItem('theme', JSON.stringify('dark'));
 }
 
 /**
@@ -53,6 +53,6 @@ export function applyTheme(myTheme: ThemeType) {
  */
 export function loadTheme() {
   const myTheme = getTheme();
-  setTheme(myTheme); // keep theme after page reload
+  setTheme(myTheme);
   applyTheme(myTheme);
 }
