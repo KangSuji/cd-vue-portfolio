@@ -2,12 +2,11 @@
 <template>
   <q-page>
     <main class="page_container main-container">
-      <!-- <div class="main-card-wrapper">
-        <mainCardComp icon="movie" :content="contents" />
-        <mainCardComp icon="movie" :content="contents" />
-        <mainCardComp icon="movie" :content="contents" />
-        <mainCardComp icon="movie" :content="contents" />
-      </div> -->
+      <div class="main-card-wrapper">
+        <template v-for="(content, index) in contents" :key="index">
+          <mainCardComp icon="movie" :content="content" />
+        </template>
+      </div>
 
       <div class="main-chart-wrapper">
         <div class="main__chart">
@@ -43,11 +42,11 @@ import BarChartComp from './components/BarChartComp.vue';
 import LineChartComp from './components/LineChartComp.vue';
 
 const movieStore = useMovieStore();
-const { trandMvList, monthlyMovieCount, monthlyTVCount } = storeToRefs(movieStore);
+const { trandMvList, monthlyMovieCount, totalMovies } = storeToRefs(movieStore);
 
 const chartSize = {
   widht: '100%',
-  height: '650px',
+  height: '500px',
 };
 
 const monthlyXaxis = computed(() => {
@@ -61,30 +60,26 @@ const monthlyXaxis = computed(() => {
 
 const monthlySeries = computed(() => {
   const movieList = monthlyMovieCount.value ?? [];
-  const tvList = monthlyTVCount?.value ?? [];
   return [
     {
       name: 'Movies',
       data: movieList,
       type: 'line',
     },
-    {
-      name: 'TV Serises',
-      data: tvList,
-      type: 'line',
-    },
   ];
 });
+
 const monthlyLegend = computed(() => {
   return {
     show: true,
-    data: ['Movies', 'TV Serises'],
+    data: ['Movies'],
     textStyle: {
       color: '#fff', // Ensure text is visible
       fontSize: 12,
     },
   };
 });
+
 const movieSeries = computed(() => {
   const movieList = trandMvList.value ?? [];
   const top3Indices = movieList
@@ -151,25 +146,79 @@ const barTooltip = computed(() => {
   }
 });
 
+const getIncreaseCnt = (prev, current): number => {
+  const increasePercentage: number = prev
+    ? parseFloat((((current - prev) / prev) * 100).toFixed(2))
+    : 0;
+  return increasePercentage;
+};
+
+const fetchMovieCnt = async () => {
+  const currentYear = new Date().getFullYear();
+  const lastYear = new Date().getFullYear() - 1;
+  const getCurrentTotalMovieCnt = await movieStore.fetchMonthlyMovieReleases(currentYear);
+  const getPrevTotalMovieCnt = await movieStore.fetchMonthlyMovieReleases(lastYear);
+
+  return { current: getCurrentTotalMovieCnt, prev: getPrevTotalMovieCnt };
+};
+const movieCnt = ref({
+  current: 0,
+  prev: 0,
+});
+
 // card
-const contents = ref<Contents>({
-  conent: '12345',
-  discription: '영화 정보',
-  icon: 'movie',
-  increase: '+ 1%',
+const contents = computed((): Contents[] => {
+  const currentMonthReleases = monthlyMovieCount.value[new Date().getMonth()] ?? 0; // 이번 달 개봉작 수
+  const previousMonthReleases = monthlyMovieCount.value[new Date().getMonth() - 1] ?? 0; // 전월 개봉작 수
+  const increase = getIncreaseCnt(previousMonthReleases, currentMonthReleases); // 전월 대비 증감량
+
+  const nextMonthRelesase = monthlyMovieCount.value[new Date().getMonth() + 1] ?? 0;
+  const nextIncrease = getIncreaseCnt(currentMonthReleases, nextMonthRelesase); // 다음달 대비 증감량
+
+  const yearIncrease = getIncreaseCnt(movieCnt.value.prev, movieCnt.value.current);
+  console.log('currentMonthReleases', currentMonthReleases);
+
+  return [
+    {
+      title: '이번 년도 영화 개봉작',
+      conent: movieCnt.value.current,
+      discription: '이번 년도 개봉한 영화 수',
+      icon: 'movie',
+      increase: yearIncrease,
+    },
+    {
+      title: '이번달 개봉작',
+      conent: currentMonthReleases,
+      discription: '전월 대비 개봉작 증감량',
+      icon: 'moving',
+      increase: increase,
+    },
+    {
+      title: '다음달 개봉 예정작',
+      conent: nextMonthRelesase,
+      increase: nextIncrease,
+      icon: 'event',
+      discription: '',
+    },
+  ];
 });
 
 const getMovieList = async () => {
   progressConfig.show();
-  try {
-    await movieStore.fetchMonthlyTvCounts(2025);
-    await movieStore.fetchMonthlyMovieCounts(2025);
-    await movieStore.searchTrandMovieByDay();
-  } catch (error) {
-    console.error(error);
-  } finally {
-    progressConfig.hide();
-  }
+
+  const currentYear = new Date().getFullYear();
+
+  const getMonthlyMovieCnt = movieStore.fetchMonthlyMovieCounts(currentYear);
+  const getTrandMoviesByDay = movieStore.searchTrandMovieByDay();
+
+  Promise.all([getMonthlyMovieCnt, getTrandMoviesByDay])
+    .then(() => {
+      fetchMovieCnt().then((result) => {
+        movieCnt.value = result;
+      });
+    })
+    .catch((error) => console.error(error))
+    .finally(() => progressConfig.hide());
 };
 
 onMounted(() => {

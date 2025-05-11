@@ -22,7 +22,7 @@ const props = defineProps({
   size: {
     type: Object,
     default: () => {
-      return { widht: '100%', height: '500px' };
+      return { widht: '100%', height: '400px' };
     },
   },
   // x축

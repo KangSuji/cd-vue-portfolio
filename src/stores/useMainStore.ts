@@ -21,6 +21,8 @@ const state = () => ({
   trandTvList: [] as any,
   monthlyMovieCount: [] as number[],
   monthlyTVCount: [] as number[],
+  totalMovies: 0 as number,
+  monthlyMovieReleases: [] as any[], // 새로운 상태 추가
 });
 
 const store = {
@@ -31,6 +33,7 @@ const store = {
     searchTrandTvByDay,
     fetchMonthlyMovieCounts,
     fetchMonthlyTvCounts,
+    fetchMonthlyMovieReleases, // 새로운 액션 추가
   },
 };
 export const useMovieStore = defineStore('useMovieStore', store);
@@ -58,22 +61,34 @@ function getMonthRanges(year: number) {
   }
   return ranges;
 }
+
 // 이번년도 월별 개봉작(예정작)
 async function fetchMonthlyMovieCounts(year: number): Promise<void> {
   const monthRanges = getMonthRanges(year);
-
   const counts: number[] = [];
   for (const { gte, lte } of monthRanges) {
     const res = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}`,
+      `https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
       options,
     ).then((res) => res.json());
-
     counts.push(res.total_results);
   }
-
   useMovieStore().monthlyMovieCount = counts;
 }
+
+// 입력 년도 총 개봉작
+async function fetchMonthlyMovieReleases(year: number): Promise<number> {
+  const gte = new Date(year, 1, 1).toISOString().slice(0, 10);
+  const lte = new Date(year, 12, 0).toISOString().slice(0, 10);
+
+  const res = await fetch(
+    `https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
+    options,
+  ).then((res) => res.json());
+
+  return res.total_results ?? 0;
+}
+
 // 이번년도 월별 TV개봉작(예정작)
 async function fetchMonthlyTvCounts(year: number): Promise<void> {
   const monthRanges = getMonthRanges(year);
@@ -81,7 +96,7 @@ async function fetchMonthlyTvCounts(year: number): Promise<void> {
   const counts: number[] = [];
   for (const { gte, lte } of monthRanges) {
     const res = await fetch(
-      `https://api.themoviedb.org/3/discover/tv?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}`,
+      `https://api.themoviedb.org/3/discover/tv?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
       options,
     ).then((res) => res.json());
 
