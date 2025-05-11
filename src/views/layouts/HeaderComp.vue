@@ -1,5 +1,5 @@
 <template>
-  <q-header class="header" elevated>
+  <q-header class="header">
     <div class="flex items-center">
       <q-btn @click="router.push('/')">
         <span class="material-symbols-rounded header_logo cursor-pointer"> movie_info </span>
@@ -18,7 +18,8 @@
     </div>
     <div class="header_right">
       <q-btn @click="themeChange">
-        <span class="material-symbols-rounded"> sunny </span>
+        <span v-if="currentTheme === ThemeType.DARK" class="material-symbols-rounded"> sunny </span>
+        <span v-else class="material-symbols-rounded"> dark_mode </span>
       </q-btn>
       <q-btn @click="router.push({ name: 'about' })">
         <span class="material-symbols-rounded"> person </span>
@@ -30,6 +31,7 @@
 import { ref } from 'vue';
 import router from '@/router';
 import { useRoute } from 'vue-router';
+import { applyTheme, getTheme, ThemeType } from '@/utils/themeUtils';
 
 interface MeunList {
   label: string;
@@ -54,7 +56,12 @@ const menus = ref<MeunList[]>([
   },
 ]);
 
+// 현재 테마
+const currentTheme = ref<ThemeType>(getTheme());
+
+// 테마 변경
 const themeChange = () => {
-  // 테마 바꿈
+  currentTheme.value = currentTheme.value === ThemeType.DARK ? ThemeType.LIGHT : ThemeType.DARK;
+  applyTheme(currentTheme.value);
 };
 </script>

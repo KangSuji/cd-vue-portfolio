@@ -18,7 +18,7 @@ const progressConfig = {
     Loading.show({
       group: group || 'movie',
       spinner: QSpinnerIos,
-      spinnerColor: 'amber',
+      spinnerColor: 'gray',
       spinnerSize: 150,
     });
   },

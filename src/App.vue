@@ -9,5 +9,11 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
 import HeaderComp from '@/views/layouts/HeaderComp.vue';
+import { onMounted } from 'vue';
+import { loadTheme } from './utils/themeUtils';
+
+onMounted(async () => {
+  await loadTheme();
+});
 </script>
 <style lang="scss" scoped></style>

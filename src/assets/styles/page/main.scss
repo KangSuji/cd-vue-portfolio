@@ -12,6 +12,7 @@
       padding: 12px 16px;
       border: 1px solid var(--dark-border);
       border-radius: 8px;
+      color: var(--dark-txt);
 
       &__title-area {
         width: 100%;
@@ -106,101 +107,25 @@
     }
   }
 }
-
-//ver 1
-// .chart_area {
-//
-// }
-// .main_top {
-//   width: 100%;
-//   display: flex;
-//   align-items: center;
-//   justify-content: space-between;
-//   margin: 20px 0;
-//   //search
-//   .search_container {
-//     .area_title {
-//       margin-bottom: 8px;
-//       font-size: 20px;
-//       font-weight: 700;
-//       color: var(--gray);
-//     }
-//     .search_area {
-//       display: flex;
-//       align-items: center;
-//       gap: 8px;
-//       .q-select {
-//         width: 200px;
-//         height: 40px;
-//         color: var(--white-2);
-//         border: 1px solid var(--dark-border);
-//         outline: none;
-//         border-radius: 8px;
-//         font-size: 20px;
-//         .q-icon {
-//           font-size: 25px;
-//           color: var(--white);
-//         }
-//         &:active,
-//         &:focus,
-//         &:hover {
-//           border-color: var(--white);
-//         }
-//       }
-//       .q-field--outlined {
-//         &.q-field--highlighted {
-//           .q-field__control {
-//             &::after {
-//               border: none;
-//             }
-//           }
-//         }
-//       }
-//       .q-field__control-container {
-//         align-items: center;
-//       }
-//       .q-field--auto-height {
-//         .q-field__control,
-//         .q-field__native {
-//           height: auto;
-//           min-height: 40px;
-//         }
-//       }
-//     }
-//   }
-//   //tabs
-//   .main_tabs {
-//     display: flex;
-//     align-items: center;
-//     justify-content: end;
-
-//     &_wrapper {
-//       &.q-tabs {
-//         width: fit-content;
-//         border: 1px solid var(--dark);
-//         border-radius: 12px;
-//         .q-tab {
-//           width: 120px;
-//           padding: 8px 20px;
-//           color: var(--gray-1);
-//         }
-//         .q-tab--active {
-//           background-color: var(--dark-tab-active);
-//           color: var(--dark-txt);
-//           .q-tab__indicator {
-//             display: none;
-//           }
-//         }
-//         .q-tab--inactive {
-//           background-color: var(--dark-tab-inactive);
-//         }
-//       }
-//     }
-//   }
-// }
-// .q-tab-panels {
-//   border-radius: 12px;
-//   padding: 24px;
-//   background-color: var(--dark-card);
-//   box-shadow: 0px 6px 6px -6px var(--dark-shadow);
-// }
+body {
+  &.body--light {
+    .main-container {
+      .main-card-wrapper {
+        .main__card {
+          border: 1px solid var(--dark-border);
+          color: var(--light-txt);
+          &__title-area {
+            &--title {
+              color: var(--light-txt);
+            }
+          }
+        }
+      }
+      .main-chart-wrapper {
+        .main__chart {
+          border: 1px solid var(--dark-border);
+        }
+      }
+    }
+  }
+}

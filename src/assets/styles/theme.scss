@@ -36,11 +36,15 @@
   --dark-shadow: var(--dark-1);
   --dark-border: var(--dark);
   //-------라이트 모드
-  // --light-header: var(--black-1); //다크모드 헤더
-  // --light-bg: var(--black-2); //다크모드 배경
-  // --light-card: var(--black-3); //다크모드 카드
-  // --light-tab-inactive: var(--gray-2); //탭 비활성 배경
-  --light-txt: var(--black);
+  --light-header: var(--white-1); // 라이트 모드 헤더
+  --light-bg: var(--white); // 라이트 모드 배경
+  --light-card: var(--white-2); // 라이트 모드 카드
+  --light-tab-active: var(--primary-1); // 탭 활성
+  --light-tab-inactive: var(--gray); // 탭 비활성 배경
+  --light-txt: var(--black); // 텍스트 색상
+  --light-white-bg: var(--white); // 밝은 배경
+  --light-shadow: var(--dark-2); // 그림자
+  --light-border: var(--gray-1); // 테두리
 }
 
 /**

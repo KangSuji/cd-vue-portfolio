@@ -6,7 +6,7 @@
   padding: 20px 40px;
   box-sizing: border-box;
   background-color: var(--dark-header);
-  box-shadow: 0 2px 4px var(0, 0, 0, 0.05);
+  //box-shadow: 0 2px 4px var(0, 0, 0, 0.05);
   position: fixed;
   &_list {
     position: absolute;
@@ -45,6 +45,33 @@
       font-size: 32px;
       &:hover {
         color: var(--black-txt);
+      }
+    }
+  }
+}
+body {
+  &.body--light {
+    .header {
+      background-color: var(--light-header);
+      &_list {
+        color: var(--dark-3);
+        li {
+          &.active,
+          :hover {
+            color: var(--black-3);
+          }
+        }
+      }
+      &_logo {
+        color: var(--black-1);
+      }
+      &_right {
+        .material-symbols-rounded {
+          color: var(--black-1);
+          &:hover {
+            color: var(--dark-3);
+          }
+        }
       }
     }
   }
