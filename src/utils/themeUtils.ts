@@ -12,7 +12,7 @@ if (!window.localStorage.getItem('theme')) {
 
 /**
  * 저장된 테마 불러오기
- * @returns : 기본값 light
+ * @returns : 기본값 dark
  */
 export function getTheme(): ThemeType {
   const myTheme = window.localStorage.getItem('theme');
