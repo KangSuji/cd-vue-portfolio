@@ -49,10 +49,10 @@ const menus = ref<MeunList[]>([
     path: '/main',
   },
   {
-    label: 'About',
-    code: 'about',
-    name: 'about',
-    path: '/about',
+    label: 'Trending',
+    code: 'trend',
+    name: 'trend',
+    path: '/trend',
   },
 ]);
 

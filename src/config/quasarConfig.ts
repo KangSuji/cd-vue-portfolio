@@ -47,6 +47,8 @@ import {
   QDate,
   ClosePopup,
   QPopupProxy,
+  QCarousel,
+  QCarouselSlide,
 } from 'quasar';
 
 export function setupQuasar(app: App) {
@@ -96,6 +98,8 @@ export function setupQuasar(app: App) {
       QSeparator,
       QPageSticky,
       QPopupProxy,
+      QCarousel,
+      QCarouselSlide,
     },
     directives: { ClosePopup },
     plugins: {

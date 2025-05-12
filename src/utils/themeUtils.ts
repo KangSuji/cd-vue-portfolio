@@ -16,8 +16,6 @@ if (!window.localStorage.getItem('theme')) {
  */
 export function getTheme(): ThemeType {
   const myTheme = window.localStorage.getItem('theme');
-  console.log('myTheme', myTheme);
-
   switch (myTheme) {
     case JSON.stringify('dark'):
       return ThemeType.DARK;
