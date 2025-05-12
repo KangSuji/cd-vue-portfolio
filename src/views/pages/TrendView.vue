@@ -2,8 +2,9 @@
   <q-page>
     <div class="page_container trand-container">
       <div class="trand-wrap">
+        <p>Trending Movies</p>
         <q-carousel
-          v-model="slide"
+          v-model="movieSlide"
           transition-prev="slide-right"
           transition-next="slide-left"
           swipeable
@@ -11,13 +12,40 @@
           navigation
           padding
           arrows
-          infinite
         >
-          <template v-for="(group, groupIndex) in groupedTrendContents" :key="groupIndex">
+          <template v-for="(group, groupIndex) in groupedTrendMoviesContents" :key="groupIndex">
             <q-carousel-slide :name="groupIndex" class="row wrap justify-around">
               <div v-for="(content, index) in group" :key="index" class="trend-item">
+                <div class="bg-wrap">
+                  <p class="trend-item-description">{{ content.description }}</p>
+                  <img :src="content.image" />
+                </div>
                 <p class="trend-item-title">{{ content.title }}</p>
-                <img class="rounded-borders full-height" :src="content.image" />
+              </div>
+            </q-carousel-slide>
+          </template>
+        </q-carousel>
+      </div>
+      <div class="trand-wrap">
+        <p>Trending TV</p>
+        <q-carousel
+          v-model="tvSlide"
+          transition-prev="slide-right"
+          transition-next="slide-left"
+          swipeable
+          animated
+          navigation
+          padding
+          arrows
+        >
+          <template v-for="(group, groupIndex) in groupedTrendTvContents" :key="groupIndex">
+            <q-carousel-slide :name="groupIndex" class="row wrap justify-around">
+              <div v-for="(content, index) in group" :key="index" class="trend-item">
+                <div class="bg-wrap">
+                  <p class="trend-item-description">{{ content.description }}</p>
+                  <img :src="content.image" />
+                </div>
+                <p class="trend-item-title">{{ content.title }}</p>
               </div>
             </q-carousel-slide>
           </template>
@@ -42,15 +70,17 @@ interface Contents {
 }
 
 const movieStore = useMovieStore();
-const { trendList } = storeToRefs(movieStore);
+const { trendMvList, trendTvList } = storeToRefs(movieStore);
 
-const slide = ref(1);
+const movieSlide = ref(1);
+
+const tvSlide = ref(1);
 
 // 한 슬라이드에 표시할 콘텐츠 개수
 const itemsPerSlide = 5;
 
-const makeTrendContents = computed(() => {
-  const trendListData = trendList.value?.results ?? [];
+const trendMoviesContents = computed(() => {
+  const trendListData = trendMvList.value?.results ?? [];
   console.log('trendListData', trendListData);
 
   return trendListData.map((item) => {
@@ -64,9 +94,34 @@ const makeTrendContents = computed(() => {
   });
 });
 
+const trendTvContents = computed(() => {
+  const trendTvLists = trendTvList.value?.results ?? [];
+  console.log('trendTvList', trendTvLists);
+
+  return trendTvLists.map((item) => {
+    return {
+      title: item.title ?? item.name,
+      image: `https://media.themoviedb.org/t/p/w220_and_h330_face/${item.poster_path}`,
+      description: item.overview,
+      releaseDate: item.first_air_date ?? item.release_date,
+      rating: item.rating,
+    };
+  });
+});
+
 // 콘텐츠를 그룹화하여 한 슬라이드에 여러 개 배치
-const groupedTrendContents = computed(() => {
-  const contents: Contents[] = makeTrendContents.value;
+const groupedTrendMoviesContents = computed(() => {
+  const contents: Contents[] = trendMoviesContents.value;
+  const groups: Array<Contents[]> = [];
+  for (let i = 0; i < contents.length; i += itemsPerSlide) {
+    groups.push(contents.slice(i, i + itemsPerSlide));
+  }
+  return groups;
+});
+
+// 콘텐츠를 그룹화하여 한 슬라이드에 여러 개 배치
+const groupedTrendTvContents = computed(() => {
+  const contents: Contents[] = trendTvContents.value;
   const groups: Array<Contents[]> = [];
   for (let i = 0; i < contents.length; i += itemsPerSlide) {
     groups.push(contents.slice(i, i + itemsPerSlide));
@@ -77,7 +132,8 @@ const groupedTrendContents = computed(() => {
 const getTrendingList = async () => {
   progressConfig.show();
   try {
-    await useMovieStore().getTrendingAllList();
+    await useMovieStore().searchTrendMovieByDay();
+    await useMovieStore().searchTrendTvByDay();
   } catch (error) {
     console.error('Error fetching trend list:', error);
   } finally {
@@ -90,28 +146,4 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped>
-.trand-wrap {
-  height: calc(100vh - 120px);
-}
-.q-carousel {
-  height: max-content;
-  background-color: transparent;
-}
-.trend-item {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 20%;
-  text-align: center;
-  .trend-item-title {
-    font-size: 18px;
-    font-weight: 500;
-    margin-bottom: 12px;
-  }
-}
-:deep(.q-carousel__navigation--bottom) {
-  bottom: -10px !important;
-}
-</style>
+<style lang="scss" scoped></style>

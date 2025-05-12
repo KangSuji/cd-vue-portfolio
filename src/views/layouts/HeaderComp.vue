@@ -21,7 +21,7 @@
         <span v-if="currentTheme === ThemeType.DARK" class="material-symbols-rounded"> sunny </span>
         <span v-else class="material-symbols-rounded"> dark_mode </span>
       </q-btn>
-      <q-btn @click="router.push({ name: 'about' })">
+      <q-btn href="https://github.com/KangSuji" target="_blank">
         <span class="material-symbols-rounded"> person </span>
       </q-btn>
     </div>
@@ -39,7 +39,6 @@ interface MeunList {
   name?: string;
   path: string;
 }
-const drawer = ref(false);
 
 const menus = ref<MeunList[]>([
   {
