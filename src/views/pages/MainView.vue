@@ -42,7 +42,7 @@ import BarChartComp from './components/BarChartComp.vue';
 import LineChartComp from './components/LineChartComp.vue';
 
 const movieStore = useMovieStore();
-const { trandMvList, monthlyMovieCount, totalMovies } = storeToRefs(movieStore);
+const { trendMvList, monthlyMovieCount, totalMovies } = storeToRefs(movieStore);
 
 const chartSize = {
   widht: '100%',
@@ -81,7 +81,7 @@ const monthlyLegend = computed(() => {
 });
 
 const movieSeries = computed(() => {
-  const movieList = trandMvList.value ?? [];
+  const movieList = trendMvList.value ?? [];
   const top3Indices = movieList
     .filter((value, index) => index < 10)
     .map((value, index) => ({ value, index }))
@@ -118,7 +118,7 @@ const movieSeries = computed(() => {
 });
 
 const movieXaxis = computed(() => {
-  const list = trandMvList.value ?? [];
+  const list = trendMvList.value ?? [];
   return [
     { type: 'category', data: list?.filter((item, idx) => idx < 10).map((item) => item.title) },
   ];
@@ -170,13 +170,11 @@ const movieCnt = ref({
 const contents = computed((): Contents[] => {
   const currentMonthReleases = monthlyMovieCount.value[new Date().getMonth()] ?? 0; // 이번 달 개봉작 수
   const previousMonthReleases = monthlyMovieCount.value[new Date().getMonth() - 1] ?? 0; // 전월 개봉작 수
-  const increase = getIncreaseCnt(previousMonthReleases, currentMonthReleases); // 전월 대비 증감량
-
   const nextMonthRelesase = monthlyMovieCount.value[new Date().getMonth() + 1] ?? 0;
-  const nextIncrease = getIncreaseCnt(currentMonthReleases, nextMonthRelesase); // 다음달 대비 증감량
 
+  const increase = getIncreaseCnt(previousMonthReleases, currentMonthReleases); // 전월 대비 증감량
+  const nextIncrease = getIncreaseCnt(currentMonthReleases, nextMonthRelesase); // 다음달 대비 증감량
   const yearIncrease = getIncreaseCnt(movieCnt.value.prev, movieCnt.value.current);
-  console.log('currentMonthReleases', currentMonthReleases);
 
   return [
     {
@@ -209,9 +207,9 @@ const getMovieList = async () => {
   const currentYear = new Date().getFullYear();
 
   const getMonthlyMovieCnt = movieStore.fetchMonthlyMovieCounts(currentYear);
-  const getTrandMoviesByDay = movieStore.searchTrandMovieByDay();
+  const getTrendMoviesByDay = movieStore.searchTrendMovieByDay();
 
-  Promise.all([getMonthlyMovieCnt, getTrandMoviesByDay])
+  Promise.all([getMonthlyMovieCnt, getTrendMoviesByDay])
     .then(() => {
       fetchMovieCnt().then((result) => {
         movieCnt.value = result;

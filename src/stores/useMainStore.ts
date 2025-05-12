@@ -1,9 +1,8 @@
 import { defineStore } from 'pinia';
 
 enum APIUrl {
-  trandMv = 'https://api.themoviedb.org/3/trending/movie/day?language=ko-KR',
-  trandTv = 'https://api.themoviedb.org/3/trending/tv/day?language=ko-KR',
-  discoverTv = 'https://api.themoviedb.org/3/discover/tv',
+  trend = 'https://api.themoviedb.org/3/trending',
+  discover = 'https://api.themoviedb.org/3/discover',
 }
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
@@ -17,37 +16,43 @@ const options = {
 };
 
 const state = () => ({
-  trandMvList: [] as any,
-  trandTvList: [] as any,
+  trendMvList: [] as any,
+  trendTvList: [] as any,
   monthlyMovieCount: [] as number[],
   monthlyTVCount: [] as number[],
   totalMovies: 0 as number,
   monthlyMovieReleases: [] as any[], // 새로운 상태 추가
+  trendList: [] as any,
 });
 
 const store = {
   id: 'useMovieStore',
   state,
   actions: {
-    searchTrandMovieByDay,
-    searchTrandTvByDay,
+    searchTrendMovieByDay,
+    searchTrendTvByDay,
     fetchMonthlyMovieCounts,
     fetchMonthlyTvCounts,
-    fetchMonthlyMovieReleases, // 새로운 액션 추가
+    fetchMonthlyMovieReleases,
+    getTrendingAllList,
   },
 };
 export const useMovieStore = defineStore('useMovieStore', store);
 
 // 오늘 트랜드 영화
-async function searchTrandMovieByDay() {
-  const res = await fetch(APIUrl.trandMv, options).then((res) => res.json());
-  useMovieStore().trandMvList = res?.results ?? [];
+async function searchTrendMovieByDay() {
+  const res = await fetch(`${APIUrl.trend}/movie/day?language=ko-KR`, options).then((res) =>
+    res.json(),
+  );
+  useMovieStore().trendMvList = res?.results ?? [];
 }
 
 // 오늘 트랜드 TV 시리즈
-async function searchTrandTvByDay() {
-  const res = await fetch(APIUrl.trandTv, options).then((res) => res.json());
-  useMovieStore().trandTvList = res?.results ?? [];
+async function searchTrendTvByDay() {
+  const res = await fetch(`${APIUrl.trend}/tv/day?language=ko-KR`, options).then((res) =>
+    res.json(),
+  );
+  useMovieStore().trendTvList = res?.results ?? [];
 }
 
 function getMonthRanges(year: number) {
@@ -68,7 +73,7 @@ async function fetchMonthlyMovieCounts(year: number): Promise<void> {
   const counts: number[] = [];
   for (const { gte, lte } of monthRanges) {
     const res = await fetch(
-      `https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
+      `${APIUrl.discover}/movie?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
       options,
     ).then((res) => res.json());
     counts.push(res.total_results);
@@ -82,7 +87,7 @@ async function fetchMonthlyMovieReleases(year: number): Promise<number> {
   const lte = new Date(year, 12, 0).toISOString().slice(0, 10);
 
   const res = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
+    `${APIUrl.discover}/movie?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
     options,
   ).then((res) => res.json());
 
@@ -96,7 +101,7 @@ async function fetchMonthlyTvCounts(year: number): Promise<void> {
   const counts: number[] = [];
   for (const { gte, lte } of monthRanges) {
     const res = await fetch(
-      `https://api.themoviedb.org/3/discover/tv?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
+      `${APIUrl.discover}/tv?primary_release_date.gte=${gte}&primary_release_date.lte=${lte}&language=ko-KR&region=KR`,
       options,
     ).then((res) => res.json());
 
@@ -104,4 +109,12 @@ async function fetchMonthlyTvCounts(year: number): Promise<void> {
   }
 
   useMovieStore().monthlyTVCount = counts;
+}
+
+async function getTrendingAllList() {
+  const res = await fetch(`${APIUrl.trend}/all/day?language=ko-KR'`, options).then((res) =>
+    res.json(),
+  );
+
+  useMovieStore().trendList = res;
 }

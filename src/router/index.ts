@@ -11,6 +11,11 @@ const routes = [
     name: 'about',
     component: () => import('@/views/pages/AboutView.vue'),
   },
+  {
+    path: '/trend',
+    name: 'trend',
+    component: () => import('@/views/pages/TrendView.vue'),
+  },
 ];
 
 const router = createRouter({
