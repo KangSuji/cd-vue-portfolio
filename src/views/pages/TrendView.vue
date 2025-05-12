@@ -80,8 +80,7 @@ const tvSlide = ref(1);
 const itemsPerSlide = 5;
 
 const trendMoviesContents = computed(() => {
-  const trendListData = trendMvList.value?.results ?? [];
-  console.log('trendListData', trendListData);
+  const trendListData = trendMvList.value ?? [];
 
   return trendListData.map((item) => {
     return {
@@ -96,7 +95,6 @@ const trendMoviesContents = computed(() => {
 
 const trendTvContents = computed(() => {
   const trendTvLists = trendTvList.value?.results ?? [];
-  console.log('trendTvList', trendTvLists);
 
   return trendTvLists.map((item) => {
     return {
