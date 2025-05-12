@@ -1,0 +1,70 @@
+.trand-container {
+  max-width: 1440px;
+  margin: 0 auto;
+  .trand-wrap {
+    margin-top: 32px;
+  }
+  .q-carousel {
+    height: 480px;
+    background-color: transparent;
+  }
+  .q-carousel__slide {
+    gap: 12px;
+    padding-top: 0;
+    .trend-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-around;
+      align-items: center;
+      width: calc(20% - 12px);
+      text-align: center;
+
+      .trend-item-title {
+        font-size: 16px;
+        font-weight: 500;
+        word-break: keep-all;
+      }
+      .bg-wrap {
+        width: 100%;
+        position: relative;
+        overflow: hidden;
+        .trend-item-description {
+          opacity: 0;
+          width: 80%;
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          border-radius: 8px;
+          color: var(--white);
+          text-align: center;
+          display: -webkit-box;
+          -webkit-line-clamp: 20;
+          -webkit-box-orient: vertical;
+          text-overflow: ellipsis;
+          overflow: hidden;
+          transition: opacity 0.3s ease;
+        }
+        &:hover {
+          img {
+            filter: blur(5px);
+          }
+          .trend-item-description {
+            opacity: 1; // 설명 보이기
+            z-index: 9;
+          }
+        }
+
+        img {
+          width: 100%;
+          object-fit: cover;
+          border-radius: 8px;
+          transition: filter 0.3s ease;
+        }
+      }
+    }
+  }
+  :deep(.q-carousel__navigation--bottom) {
+    bottom: -10px !important;
+  }
+}

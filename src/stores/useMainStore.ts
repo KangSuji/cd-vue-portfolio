@@ -44,7 +44,7 @@ async function searchTrendMovieByDay() {
   const res = await fetch(`${APIUrl.trend}/movie/day?language=ko-KR`, options).then((res) =>
     res.json(),
   );
-  useMovieStore().trendMvList = res?.results ?? [];
+  useMovieStore().trendMvList = res.results ?? [];
 }
 
 // 오늘 트랜드 TV 시리즈
@@ -52,7 +52,7 @@ async function searchTrendTvByDay() {
   const res = await fetch(`${APIUrl.trend}/tv/day?language=ko-KR`, options).then((res) =>
     res.json(),
   );
-  useMovieStore().trendTvList = res?.results ?? [];
+  useMovieStore().trendTvList = res;
 }
 
 function getMonthRanges(year: number) {
