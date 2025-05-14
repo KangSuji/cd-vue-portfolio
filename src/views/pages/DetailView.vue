@@ -2,16 +2,20 @@
   <q-page>
     <div class="page_container detail-container">
       <div class="detail-wrap">
-        <p class="detail__title">Detail</p>
-        <q-btn @click="router.go(-1)" label="Go Back" color="primary" />
+        <div class="flex items-center">
+          <p class="detail__title">Detail</p>
+        </div>
         <div class="detail_card">
           <div class="detail_card--bg" :style="bgImageStyle"></div>
-          <div>
+          <div class="detail_card--content_area">
             <img
               :src="`https://media.themoviedb.org/t/p/w220_and_h330_face/${contentsDetail.poster_path}`"
             />
-            <p class="detail-card__title">{{ contentsDetail.title }}</p>
-            <p class="detail-card__description">{{ contentsDetail.overview }}</p>
+            <div class="detail_card--content">
+              <p class="detail-card__title">{{ contentsDetail.title }}</p>
+              <p class="detail-card__title">{{ contentsDetail.original_title }}</p>
+              <p class="detail-card__description">{{ contentsDetail.overview }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -68,47 +72,74 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="scss">
-.detail_card {
-  width: 100%;
-  height: 100%;
-  position: relative;
-
-  .detail_card--bg {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 500px;
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    border-radius: 12px;
-    z-index: 1;
-    overflow: hidden;
-
-    &::after {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 0;
+.detail-container {
+  //max-width: 1440px;
+  //margin: 0 auto;
+  .detail-wrap {
+    margin-top: 24px;
+    .detail__title {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+    .detail_card {
       width: 100%;
       height: 100%;
-      border-radius: 12px;
-      /* 아래에서 위로 옅어지는 검정 그라데이션 */
-      background: linear-gradient(
-        to top,
-        rgba(0, 0, 0, 0.7) 0%,
-        rgba(0, 0, 0, 0.1) 70%,
-        rgba(0, 0, 0, 0) 100%
-      );
-      z-index: 2;
-      pointer-events: none;
-    }
-  }
+      position: relative;
+      padding: 20px 32px;
+      &--bg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 500px;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        border-radius: 12px 12px 0;
+        z-index: 1;
 
-  > div:not(.detail_card--bg) {
-    position: relative;
-    z-index: 3;
-    /* 필요시 padding 등 추가 */
+        &::after {
+          content: '';
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 100%;
+          height: 101%;
+          border-radius: 12px 12px 0;
+          background: linear-gradient(
+            to top,
+            rgba(9, 9, 11, 1) 0%,
+            rgba(9, 9, 11, 0.5) 70%,
+            rgba(9, 9, 11, 0) 100%
+          );
+          z-index: 2;
+          pointer-events: none;
+        }
+      }
+
+      > div:not(.detail_card--bg) {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        gap: 20px;
+      }
+      .detail_card--content_area {
+        img {
+          border-radius: 8px;
+        }
+      }
+      &--content {
+        width: 100%;
+        .detail-card__title {
+          font-size: 32px;
+          font-weight: 700;
+          color: var(--dark-txt);
+          margin-bottom: 12px;
+        }
+      }
+    }
   }
 }
 </style>
