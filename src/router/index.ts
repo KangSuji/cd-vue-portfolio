@@ -16,6 +16,11 @@ const routes = [
     name: 'trend',
     component: () => import('@/views/pages/TrendView.vue'),
   },
+  {
+    path: '/detail/:category/:id',
+    name: 'detail',
+    component: () => import('@/views/pages/DetailView.vue'),
+  },
 ];
 
 const router = createRouter({

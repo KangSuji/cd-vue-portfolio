@@ -1,8 +1,18 @@
 .trand-container {
   max-width: 1440px;
   margin: 0 auto;
+  font-family: 'Pretendard Variable', sans-serif;
   .trand-wrap {
-    margin-top: 32px;
+    margin-top: 24px;
+    padding: 24px;
+    border-radius: 8px;
+    background-color: var(--dark-card);
+    .trand__title {
+      margin-bottom: 24px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+    }
   }
   .q-carousel {
     height: 480px;
@@ -18,12 +28,14 @@
       align-items: center;
       width: calc(20% - 12px);
       text-align: center;
+      cursor: pointer;
 
       .trend-item-title {
         font-size: 16px;
         font-weight: 500;
         word-break: keep-all;
       }
+
       .bg-wrap {
         width: 100%;
         position: relative;
@@ -38,19 +50,20 @@
           border-radius: 8px;
           color: var(--white);
           text-align: center;
+          font-size: 14px;
           display: -webkit-box;
           -webkit-line-clamp: 20;
           -webkit-box-orient: vertical;
           text-overflow: ellipsis;
           overflow: hidden;
-          transition: opacity 0.3s ease;
+          transition: opacity 0.3s ease-in;
         }
         &:hover {
           img {
-            filter: blur(5px);
+            filter: blur(3px);
           }
           .trend-item-description {
-            opacity: 1; // 설명 보이기
+            opacity: 1;
             z-index: 9;
           }
         }
@@ -59,7 +72,7 @@
           width: 100%;
           object-fit: cover;
           border-radius: 8px;
-          transition: filter 0.3s ease;
+          transition: filter 0.3s ease-in;
         }
       }
     }

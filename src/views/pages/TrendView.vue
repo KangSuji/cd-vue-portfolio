@@ -2,7 +2,7 @@
   <q-page>
     <div class="page_container trand-container">
       <div class="trand-wrap">
-        <p>Trending Movies</p>
+        <p class="trand__title">Trending Movies</p>
         <q-carousel
           v-model="movieSlide"
           transition-prev="slide-right"
@@ -15,7 +15,12 @@
         >
           <template v-for="(group, groupIndex) in groupedTrendMoviesContents" :key="groupIndex">
             <q-carousel-slide :name="groupIndex" class="row wrap justify-around">
-              <div v-for="(content, index) in group" :key="index" class="trend-item">
+              <div
+                v-for="(content, index) in group"
+                :key="index"
+                class="trend-item"
+                @click="onClickDetail(content.id, 'movie')"
+              >
                 <div class="bg-wrap">
                   <p class="trend-item-description">{{ content.description }}</p>
                   <img :src="content.image" />
@@ -27,7 +32,7 @@
         </q-carousel>
       </div>
       <div class="trand-wrap">
-        <p>Trending TV</p>
+        <p class="trand__title">Trending TV Series</p>
         <q-carousel
           v-model="tvSlide"
           transition-prev="slide-right"
@@ -40,7 +45,12 @@
         >
           <template v-for="(group, groupIndex) in groupedTrendTvContents" :key="groupIndex">
             <q-carousel-slide :name="groupIndex" class="row wrap justify-around">
-              <div v-for="(content, index) in group" :key="index" class="trend-item">
+              <div
+                v-for="(content, index) in group"
+                :key="index"
+                class="trend-item"
+                @click="onClickDetail(content.id, 'tv')"
+              >
                 <div class="bg-wrap">
                   <p class="trend-item-description">{{ content.description }}</p>
                   <img :src="content.image" />
@@ -56,12 +66,16 @@
 </template>
 
 <script setup lang="ts">
+import { computed, onMounted, ref } from 'vue';
+// store
 import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/useMainStore';
-import { computed, onMounted, ref } from 'vue';
+
+import router from '@/router';
 import progressConfig from '@/config/progressConfig';
 
 interface Contents {
+  id: number;
   title: string;
   image: string;
   description: string;
@@ -84,6 +98,7 @@ const trendMoviesContents = computed(() => {
 
   return trendListData.map((item) => {
     return {
+      id: item.id,
       title: item.title ?? item.name,
       image: `https://media.themoviedb.org/t/p/w220_and_h330_face/${item.poster_path}`,
       description: item.overview,
@@ -98,6 +113,7 @@ const trendTvContents = computed(() => {
 
   return trendTvLists.map((item) => {
     return {
+      id: item.id,
       title: item.title ?? item.name,
       image: `https://media.themoviedb.org/t/p/w220_and_h330_face/${item.poster_path}`,
       description: item.overview,
@@ -126,6 +142,16 @@ const groupedTrendTvContents = computed(() => {
   }
   return groups;
 });
+
+const onClickDetail = (contentId: number, category: string) => {
+  router.push({
+    name: 'detail',
+    params: {
+      id: contentId,
+      category: category,
+    },
+  });
+};
 
 const getTrendingList = async () => {
   progressConfig.show();

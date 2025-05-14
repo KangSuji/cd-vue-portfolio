@@ -3,6 +3,8 @@ import { defineStore } from 'pinia';
 enum APIUrl {
   trend = 'https://api.themoviedb.org/3/trending',
   discover = 'https://api.themoviedb.org/3/discover',
+  movie = 'https://api.themoviedb.org/3/movie',
+  tv = 'https://api.themoviedb.org/3/tv',
 }
 
 const apiKey = import.meta.env.VITE_TMDB_API_KEY;
@@ -23,6 +25,8 @@ const state = () => ({
   totalMovies: 0 as number,
   monthlyMovieReleases: [] as any[], // 새로운 상태 추가
   trendList: [] as any,
+  movieDetil: {} as any,
+  tvDetail: {} as any,
 });
 
 const store = {
@@ -35,6 +39,7 @@ const store = {
     fetchMonthlyTvCounts,
     fetchMonthlyMovieReleases,
     getTrendingAllList,
+    getContentDetail,
   },
 };
 export const useMovieStore = defineStore('useMovieStore', store);
@@ -117,4 +122,19 @@ async function getTrendingAllList() {
   );
 
   useMovieStore().trendList = res;
+}
+
+// 영화/TV 상세 정보 가져오기
+async function getContentDetail(id: number, category: string) {
+  if (category === 'movie') {
+    const res = await fetch(`${APIUrl.movie}/${id}?language=ko-KR'`, options).then((res) =>
+      res.json(),
+    );
+    useMovieStore().movieDetil = res;
+  } else {
+    const res = await fetch(`${APIUrl.tv}/${id}?language=ko-KR'`, options).then((res) =>
+      res.json(),
+    );
+    useMovieStore().tvDetail = res;
+  }
 }
