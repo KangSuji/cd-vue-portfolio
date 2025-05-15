@@ -12,6 +12,7 @@
           navigation
           padding
           arrows
+          control-color="blue-grey-3"
         >
           <template v-for="(group, groupIndex) in groupedTrendMoviesContents" :key="groupIndex">
             <q-carousel-slide :name="groupIndex" class="row wrap justify-around">

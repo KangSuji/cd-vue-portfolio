@@ -2,9 +2,6 @@
   <q-page>
     <div class="page_container detail-container">
       <div class="detail-wrap">
-        <div class="flex items-center">
-          <p class="detail__title">Detail</p>
-        </div>
         <div class="detail_card">
           <div class="detail_card--bg" :style="bgImageStyle"></div>
           <div class="detail_card--content_area">
@@ -12,9 +9,28 @@
               :src="`https://media.themoviedb.org/t/p/w220_and_h330_face/${contentsDetail.poster_path}`"
             />
             <div class="detail_card--content">
-              <p class="detail-card__title">{{ contentsDetail.title }}</p>
-              <p class="detail-card__title">{{ contentsDetail.original_title }}</p>
-              <p class="detail-card__description">{{ contentsDetail.overview }}</p>
+              <div class="detail-card-title-area">
+                <p class="detail-card--title">{{ contentsDetail.title }}</p>
+                <p class="detail-card--title">{{ contentsDetail.original_title }}</p>
+                <p class="detail-card--title">{{ contentsDetail.tagline }}</p>
+              </div>
+              <div class="flex items-center">
+                <template v-for="(genre, index) in contentsDetail.genres" :key="index">
+                  <span class="detail-card--genres">{{ genre.name }}</span>
+                </template>
+              </div>
+              <div class="detail-card--info-area">
+                <span class="material-symbols-rounded star"> star </span>
+                <p class="detail-card--title">{{ contentsDetail.rate }}</p>
+                <span class="material-symbols-rounded calendar"> calendar_month </span>
+                <p class="detail-card--title">{{ contentsDetail.release_date }}</p>
+                <span class="material-symbols-rounded schedule"> schedule </span>
+                <p class="detail-card--title">{{ contentsDetail.runtime }} 분</p>
+              </div>
+              <div class="detail-card--description-area">
+                <p class="detail_card--sub-title">개요</p>
+                <p class="detail-card--description">{{ contentsDetail.overview }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -30,6 +46,20 @@ import { useRoute, useRouter } from 'vue-router';
 import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/useMainStore';
 
+interface ContentsDetail {
+  id: number;
+  title: string;
+  original_title: string;
+  tagline: string;
+  genres: Array<{ id: number; name: string }>;
+  rate: number;
+  release_date: string;
+  runtime: number;
+  overview: string;
+  backdrop_path: string;
+  poster_path: string;
+}
+
 const router = useRouter();
 const route = useRoute();
 
@@ -39,13 +69,27 @@ const { movieDetil, tvDetail } = storeToRefs(movieStore);
 const contentId = ref(route?.params?.id ?? '');
 const category = ref<string>((route?.params?.category ?? '') as string);
 
-const contentsDetail = computed(() => {
+const contentsDetail = computed<ContentsDetail>(() => {
   const type = category.value?.toString() || 'movie';
   if (type === 'movie') {
-    const detail = movieDetil.value ?? {};
-    return detail;
+    const movie = movieDetil.value;
+    if (!movie) return {} as ContentsDetail;
+    return {
+      id: movie.id,
+      title: movie.title,
+      original_title: movie.original_title,
+      tagline: movie.tagline,
+      genres: movie.genres,
+      rate: movie.vote_average,
+      release_date: movie.release_date,
+      runtime: movie.runtime,
+      overview: movie.overview,
+      backdrop_path: movie.backdrop_path,
+      poster_path: movie.poster_path,
+    };
   } else {
-    return tvDetail.value;
+    // tvDetail.value가 ContentsDetail 타입과 호환된다고 가정
+    return tvDetail.value as ContentsDetail;
   }
 });
 
@@ -71,75 +115,4 @@ onMounted(() => {
   getContentDetail();
 });
 </script>
-<style scoped lang="scss">
-.detail-container {
-  //max-width: 1440px;
-  //margin: 0 auto;
-  .detail-wrap {
-    margin-top: 24px;
-    .detail__title {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 16px;
-    }
-    .detail_card {
-      width: 100%;
-      height: 100%;
-      position: relative;
-      padding: 20px 32px;
-      &--bg {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 500px;
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        border-radius: 12px 12px 0;
-        z-index: 1;
-
-        &::after {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 101%;
-          border-radius: 12px 12px 0;
-          background: linear-gradient(
-            to top,
-            rgba(9, 9, 11, 1) 0%,
-            rgba(9, 9, 11, 0.5) 70%,
-            rgba(9, 9, 11, 0) 100%
-          );
-          z-index: 2;
-          pointer-events: none;
-        }
-      }
-
-      > div:not(.detail_card--bg) {
-        position: relative;
-        z-index: 3;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: 20px;
-      }
-      .detail_card--content_area {
-        img {
-          border-radius: 8px;
-        }
-      }
-      &--content {
-        width: 100%;
-        .detail-card__title {
-          font-size: 32px;
-          font-weight: 700;
-          color: var(--dark-txt);
-          margin-bottom: 12px;
-        }
-      }
-    }
-  }
-}
-</style>
+<style scoped lang="scss"></style>

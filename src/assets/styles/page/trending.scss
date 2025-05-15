@@ -34,6 +34,7 @@
         font-size: 16px;
         font-weight: 500;
         word-break: keep-all;
+        color: var(--dark-txt);
       }
 
       .bg-wrap {
@@ -79,5 +80,24 @@
   }
   :deep(.q-carousel__navigation--bottom) {
     bottom: -10px !important;
+  }
+}
+body {
+  &.body--light {
+    .trand-container {
+      .trand-wrap {
+        background-color: var(--light-card);
+        .trand__title {
+          color: var(--black);
+        }
+        .q-carousel__slide {
+          .trend-item {
+            .trend-item-title {
+              color: var(--light-txt);
+            }
+          }
+        }
+      }
+    }
   }
 }
