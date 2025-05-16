@@ -73,7 +73,7 @@ interface ContentsDetail {
   poster_path: string;
   number_of_episodes?: number;
   number_of_seasons?: number;
-  homepage: string;
+  homepage?: string;
 }
 
 const router = useRouter();
