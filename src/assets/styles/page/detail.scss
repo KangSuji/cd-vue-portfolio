@@ -6,9 +6,12 @@
       font-weight: 700;
       margin-bottom: 16px;
     }
-    .back-btn {
-      font-size: 20px;
-      margin-right: 12px;
+    .back-btn-area {
+      color: var(--dark-txt);
+      .back-btn {
+        font-size: 20px;
+        margin-right: 12px;
+      }
     }
     .detail_card {
       width: 100%;
@@ -56,13 +59,18 @@
         align-items: center;
         gap: 20px;
       }
+
       &--content_area {
         max-width: 1440px;
         margin: 0 auto;
         img {
           border-radius: 8px;
         }
+        @media (max-width: 1024px) {
+          flex-direction: column;
+        }
       }
+
       &--content {
         width: 100%;
         .detail-card--title {
@@ -124,10 +132,14 @@
     }
   }
 }
+
 body {
   &.body--light {
     .detail-container {
       .detail-wrap {
+        .back-btn-area {
+          color: var(--light-txt);
+        }
         .detail_card {
           &--bg {
             &::after {

@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue';
 // store
 import { storeToRefs } from 'pinia';
 import { useMovieStore } from '@/stores/useMainStore';
@@ -87,12 +87,32 @@ interface Contents {
 const movieStore = useMovieStore();
 const { trendMvList, trendTvList } = storeToRefs(movieStore);
 
-const movieSlide = ref(1);
+const movieSlide = ref(0);
 
-const tvSlide = ref(1);
+const tvSlide = ref(0);
 
 // 한 슬라이드에 표시할 콘텐츠 개수
-const itemsPerSlide = 5;
+const itemsPerSlide = ref(getItemsPerSlide());
+
+function getItemsPerSlide() {
+  const width = window.innerWidth;
+  if (width < 500) return 1;
+  if (width < 768) return 2;
+  if (width < 1024) return 3;
+  if (width < 1440) return 4;
+  return 5;
+}
+
+function handleResize() {
+  itemsPerSlide.value = getItemsPerSlide();
+}
+
+onMounted(() => {
+  window.addEventListener('resize', handleResize);
+});
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', handleResize);
+});
 
 const trendMoviesContents = computed(() => {
   const trendListData = trendMvList.value ?? [];
@@ -128,18 +148,17 @@ const trendTvContents = computed(() => {
 const groupedTrendMoviesContents = computed(() => {
   const contents: Contents[] = trendMoviesContents.value;
   const groups: Array<Contents[]> = [];
-  for (let i = 0; i < contents.length; i += itemsPerSlide) {
-    groups.push(contents.slice(i, i + itemsPerSlide));
+  for (let i = 0; i < contents.length; i += itemsPerSlide.value) {
+    groups.push(contents.slice(i, i + itemsPerSlide.value));
   }
   return groups;
 });
 
-// 콘텐츠를 그룹화하여 한 슬라이드에 여러 개 배치
 const groupedTrendTvContents = computed(() => {
   const contents: Contents[] = trendTvContents.value;
   const groups: Array<Contents[]> = [];
-  for (let i = 0; i < contents.length; i += itemsPerSlide) {
-    groups.push(contents.slice(i, i + itemsPerSlide));
+  for (let i = 0; i < contents.length; i += itemsPerSlide.value) {
+    groups.push(contents.slice(i, i + itemsPerSlide.value));
   }
   return groups;
 });

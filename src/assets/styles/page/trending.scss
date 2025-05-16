@@ -21,14 +21,28 @@
   .q-carousel__slide {
     gap: 12px;
     padding-top: 0;
+
     .trend-item {
+      width: calc(20% - 12px);
+      height: fit-content;
       display: flex;
       flex-direction: column;
       justify-content: space-around;
       align-items: center;
-      width: calc(20% - 12px);
       text-align: center;
       cursor: pointer;
+      @media (max-width: 1440px) {
+        width: calc(25% - 12px); // 4개
+      }
+      @media (max-width: 1024px) {
+        width: calc(33.3333% - 12px); // 3개
+      }
+      @media (max-width: 768px) {
+        width: calc(50% - 12px); // 2개
+      }
+      @media (max-width: 500px) {
+        width: 100%; // 1개
+      }
 
       .trend-item-title {
         font-size: 16px;
@@ -77,11 +91,18 @@
         }
       }
     }
+    @media (max-width: 1440px) {
+      .trend-item {
+        justify-content: center;
+        gap: 12px;
+      }
+    }
   }
   :deep(.q-carousel__navigation--bottom) {
     bottom: -10px !important;
   }
 }
+
 body {
   &.body--light {
     .trand-container {

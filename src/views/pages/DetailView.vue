@@ -2,7 +2,7 @@
   <q-page>
     <div class="page_container detail-container">
       <div class="detail-wrap">
-        <div class="flex items-center cursor-pointer" @click="router.go(-1)">
+        <div class="flex items-center cursor-pointer back-btn-area" @click="router.go(-1)">
           <span class="material-symbols-rounded back-btn"> arrow_back </span>
           <span>뒤로 가기</span>
         </div>
