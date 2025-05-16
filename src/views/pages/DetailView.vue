@@ -2,6 +2,10 @@
   <q-page>
     <div class="page_container detail-container">
       <div class="detail-wrap">
+        <div class="flex items-center cursor-pointer" @click="router.go(-1)">
+          <span class="material-symbols-rounded back-btn"> arrow_back </span>
+          <span>뒤로 가기</span>
+        </div>
         <div class="detail_card">
           <div class="detail_card--bg" :style="bgImageStyle"></div>
           <div class="detail_card--content_area">
@@ -24,8 +28,17 @@
                 <p class="detail-card--title">{{ contentsDetail.rate }}</p>
                 <span class="material-symbols-rounded calendar"> calendar_month </span>
                 <p class="detail-card--title">{{ contentsDetail.release_date }}</p>
-                <span class="material-symbols-rounded schedule"> schedule </span>
-                <p class="detail-card--title">{{ contentsDetail.runtime }} 분</p>
+                <template v-if="category.toString() === 'movie'">
+                  <span class="material-symbols-rounded schedule"> schedule </span>
+                  <p class="detail-card--title">{{ contentsDetail.runtime }} 분</p>
+                </template>
+                <template v-else>
+                  <span class="material-symbols-rounded episode"> tv_guide </span>
+                  <p class="detail-card--title">시즌 {{ contentsDetail.number_of_seasons }}</p>
+                  <p class="detail-card--title">
+                    에피소드 {{ contentsDetail.number_of_episodes }} 개
+                  </p>
+                </template>
               </div>
               <div class="detail-card--description-area">
                 <p class="detail_card--sub-title">개요</p>
@@ -54,10 +67,13 @@ interface ContentsDetail {
   genres: Array<{ id: number; name: string }>;
   rate: number;
   release_date: string;
-  runtime: number;
+  runtime?: number;
   overview: string;
   backdrop_path: string;
   poster_path: string;
+  number_of_episodes?: number;
+  number_of_seasons?: number;
+  homepage: string;
 }
 
 const router = useRouter();
@@ -89,7 +105,22 @@ const contentsDetail = computed<ContentsDetail>(() => {
     };
   } else {
     // tvDetail.value가 ContentsDetail 타입과 호환된다고 가정
-    return tvDetail.value as ContentsDetail;
+    const tv = tvDetail.value;
+    if (!tv) return {} as ContentsDetail;
+    return {
+      id: tv.id,
+      title: tv.name,
+      original_title: tv.original_name,
+      tagline: tv.tagline,
+      genres: tv.genres,
+      rate: tv.vote_average,
+      release_date: tv.first_air_date,
+      number_of_seasons: tv.number_of_seasons,
+      number_of_episodes: tv.number_of_episodes,
+      overview: tv.overview,
+      backdrop_path: tv.backdrop_path,
+      poster_path: tv.poster_path,
+    };
   }
 });
 
