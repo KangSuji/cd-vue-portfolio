@@ -1,24 +1,40 @@
 .detail-container {
   .detail-wrap {
+    max-width: 1440px;
+    margin: 0 auto;
     margin-top: 24px;
     .detail__title {
       font-size: 24px;
       font-weight: 700;
       margin-bottom: 16px;
     }
+    .detail-card-sub-title {
+      font-size: 18px;
+      margin: 16px 0;
+      color: var(--dark-txt);
+    }
     .back-btn-area {
       color: var(--dark-txt);
+      margin-bottom: 12px;
       .back-btn {
         font-size: 20px;
         margin-right: 12px;
       }
     }
+    .homepage-btn {
+      display: inline-flex;
+      color: var(--dark-txt);
+      text-decoration: none;
+      padding: 8px 12px;
+      background-color: var(--black-3);
+      border-radius: 8px;
+      margin-top: 12px;
+      font-size: 14px;
+    }
     .detail_card {
       width: 100%;
-      max-width: 1440px;
       height: 100%;
       position: relative;
-      margin: 0 auto;
       padding: 42px 32px;
 
       &--bg {
@@ -96,14 +112,24 @@
           font-size: 12px;
         }
         .detail-card--info-area {
-          display: flex;
+          display: grid;
+          grid-template-columns: repeat(7, minmax(0, max-content));
           align-items: center;
           margin-top: 24px;
+          gap: 8px;
+          @media (max-width: 550px) {
+            grid-template-columns: repeat(2, minmax(0, max-content));
+
+            & > *:nth-child(7) {
+              grid-column: 1 / -1;
+            }
+          }
           .detail-card--title {
             font-size: 18px;
             margin-right: 12px;
           }
           .material-symbols-rounded {
+            justify-content: start;
             margin-bottom: -3px;
             margin-right: 5px;
             font-size: 20px;
@@ -137,6 +163,9 @@ body {
   &.body--light {
     .detail-container {
       .detail-wrap {
+        .detail-card-sub-title {
+          color: var(--light-txt);
+        }
         .back-btn-area {
           color: var(--light-txt);
         }

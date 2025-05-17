@@ -16,7 +16,7 @@
               <div class="detail-card-title-area">
                 <p class="detail-card--title">{{ contentsDetail.title }}</p>
                 <p class="detail-card--title">{{ contentsDetail.original_title }}</p>
-                <p class="detail-card--title">{{ contentsDetail.tagline }}</p>
+                <p class="detail-card-sub-title">{{ contentsDetail.tagline }}</p>
               </div>
               <div class="flex items-center">
                 <template v-for="(genre, index) in contentsDetail.genres" :key="index">
@@ -40,9 +40,19 @@
                   </p>
                 </template>
               </div>
+
+              <a
+                v-if="contentsDetail.homepage"
+                class="homepage-btn"
+                :href="contentsDetail.homepage"
+                target="_blank"
+              >
+                보러가기
+              </a>
+
               <div class="detail-card--description-area">
                 <p class="detail_card--sub-title">개요</p>
-                <p class="detail-card--description">{{ contentsDetail.overview }}</p>
+                <p class="detail-card--description">{{ contentsDetail.overview ?? '-' }}</p>
               </div>
             </div>
           </div>
@@ -102,6 +112,7 @@ const contentsDetail = computed<ContentsDetail>(() => {
       overview: movie.overview,
       backdrop_path: movie.backdrop_path,
       poster_path: movie.poster_path,
+      homepage: movie.homepage,
     };
   } else {
     // tvDetail.value가 ContentsDetail 타입과 호환된다고 가정
@@ -120,6 +131,7 @@ const contentsDetail = computed<ContentsDetail>(() => {
       overview: tv.overview,
       backdrop_path: tv.backdrop_path,
       poster_path: tv.poster_path,
+      homepage: tv.homepage,
     };
   }
 });
