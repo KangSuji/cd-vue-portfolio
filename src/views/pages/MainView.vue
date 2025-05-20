@@ -20,7 +20,7 @@
           />
         </div>
         <div class="main__chart">
-          <p class="main__chart__title">Get the trending movies 10(Today)</p>
+          <p class="main__chart__title">오늘의 영화 순위 TOP 10</p>
           <BarChartComp
             :size="chartSize"
             :x-axis="movieXaxis"
